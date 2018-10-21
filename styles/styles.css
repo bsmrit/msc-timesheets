@@ -1,0 +1,56 @@
+nav {
+    box-shadow: 0 3px 11px -4px rgba(0, 0, 0, 0.75);
+}
+
+.a {
+    border: 1px solid black;
+}
+
+.b {
+    border: 1px solid pink;
+}
+
+.c {
+    border: 1px solid gray;
+}
+
+.green {
+    background-color: #448f77;
+}
+
+.white {
+    color: white;
+}
+
+.radius {
+    border-radius: 0;
+    border-style: none;
+}
+
+.bor{
+    border-radius: 0;
+    border: 1px solid #2c4f85;
+}
+
+.font-logo1 {
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: .7em;
+}
+
+.font-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.7em;
+    color: #4b4b4b;
+}
+
+.font {
+    font-family: 'Crete Round', serif;
+    font-weight: normal;
+    font-size: 1.3em;
+    color: #2c4f85;
+}
+
+.blue{
+    background-color: #2c4f85;
+}
