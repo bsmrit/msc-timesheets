@@ -12,7 +12,7 @@
     <div class="px-0 container col-sm-11 ">
         <div class="py-1">
             <div class="container p-0">
-                <img src="{{@BASE}}/includes/msc-logo.png" style="height:60px">
+                <img src="{{@BASE}}/includes/msc-logo.png" alt="" style="height:60px">
             </div>
         </div>
         <h3 class="font-logo pt-1">TIMESHEETS</h3>

@@ -20,14 +20,14 @@
             </div>
             <div class="row justify-content-md-center">
                 <div class="col-8 p-1">
-                    <form id="nameForm" autocomplete="off" action="">
+                    <form id="nameForm" autocomplete="off">
                         <div class="autocomplete" style="width:100%;">
                                 <input id="myInput" type="text" name="myName" placeholder="Name">
                         </div>
                     </form>
                 </div>
                 <div class="col-4 p-1">
-                    <input id="employeeNameSubmit" type="submit" style="width:100%;">
+                    <input id="employeeNameSubmit" type="submit" style="width:100%;" value="Submit">
                 </div>
             </div>
             <div id="alertRow" class="row justify-content-md-center">

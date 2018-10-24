@@ -1,10 +1,10 @@
 <?php
-/**
- * Navbar for the admin page. Extends the basic navbar by adding search input and "add employee" button.
- *
- * @author Dmitry Yushchev
- * @version 1.0
- */
+    /**
+     * Navbar for the admin page. Extends the basic navbar by adding search input and "add employee" button.
+     *
+     * @author Dmitry Yushchev
+     * @version 1.0
+     */
 ?>
 
 <body>
@@ -12,7 +12,7 @@
     <div class="px-0 container col-sm-11 ">
         <div class="py-1">
             <div class="container p-0">
-                <img src="{{@BASE}}/includes/msc-logo.png" style="height:60px">
+                <img src="{{@BASE}}/includes/msc-logo.png" alt="" style="height:60px">
             </div>
         </div>
         <h3 class="font-logo pt-1">TIMESHEETS</h3>
@@ -36,9 +36,11 @@
             </ul>
             <form class="form-inline my-2 mt-3 my-lg-0">
                 <a id="employee" class="blue font1 btn btn-secondary mr-2 my-sm-0 radius" href="{{ @BASE.'/addEmployee' }}">Add Employee</a>
-                <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">
-                <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>
-                </button>
+
+                <!--  S E A R C H  B O X  -->
+                <!-- <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">-->
+                <!-- <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>-->
+                <!-- </button>-->
             </form>
         </div>
     </div>

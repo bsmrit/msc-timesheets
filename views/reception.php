@@ -5,10 +5,11 @@
  * @author James Way
  * @version 1.0
  */
+ 
 ?>
 
 <!-- Auto refresh the page every 20 seconds -->
-<meta http-equiv="refresh" content="20" >
+<meta http-equiv="refresh" content="10" >
 
 <include href="views/components/header.php"></include>
 <include href="views/components/navBarReception.php"></include>

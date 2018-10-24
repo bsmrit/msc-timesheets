@@ -12,25 +12,32 @@ $(document).ready(function () {
     $("#add-employee-btn-save").on("click", saveBtnAddEmployeePopup);
 });
 
+/**
+ * Displays add employee div
+ */
 function showAddEmployeePopup() {
     event.preventDefault();
 
     //hides other popups
     // removeErrorDiv();
-    // hideCreateListPopup();
-    // hideHelpPopup();
-    // hideEditPopup();
 
     console.log("add employee");
     $('#add-employee-popup:hidden').show("fast");
 }
 
+/**
+ *
+ */
 function closeBtnAddEmployeePopup() {
     event.preventDefault();
     $('#add-employee-popup').hide("fast");
     console.log("add employee closed btm pressed");
 }
 
+/**
+ * Gets first and last names from input window.
+ * If no errors pass data to postNewEmployee() and insertNewEmployeeIntoDb() functions;
+ */
 function saveBtnAddEmployeePopup() {
     console.log("save btm pressed");
     // removeErrorDiv();
@@ -59,6 +66,11 @@ function saveBtnAddEmployeePopup() {
     }
 }
 
+/**
+ * Gets a string value and capitalizes the 1st letter, (lower case other letters)
+ * @param data string value, first od last names
+ * @returns {string} first od last names
+ */
 function upperCaseNameNoWhiteSpace(data) {
     let name = data.toLowerCase();
     name = name.replace(/\s/g, '');
@@ -66,6 +78,10 @@ function upperCaseNameNoWhiteSpace(data) {
     return name;
 }
 
+/**
+ * Posts data in next raw in the table
+ * @param data first, last name
+ */
 function postNewEmployee(data) {
 
     let firstName = data[0];
@@ -86,6 +102,10 @@ function postNewEmployee(data) {
     closeBtnAddEmployeePopup();
 }
 
+/**
+ * Creates ajax request, sends data to ajax.php
+ * @param data first, last names
+ */
 function insertNewEmployeeIntoDb(data) {
     console.log("insertNewEmployeeIntoDb: " + data[0] + ", " + data[1]);
     $.ajax({
@@ -100,6 +120,10 @@ function insertNewEmployeeIntoDb(data) {
     });
 }
 
+/**
+ * Creates ajax request, get data from  ajax.php
+ * calls refreshEmployeeNameTable()
+ */
 function uploadEmployeeNames() {
     $.ajax({
         type: "GET",
@@ -118,6 +142,10 @@ function uploadEmployeeNames() {
     });
 }
 
+/**
+ * Uploads all employee data to each raw in the table
+ * @param data first, last names
+ */
 function refreshEmployeeNameTable(data) {
 
     let tableName = JSON.parse(data);

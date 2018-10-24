@@ -12,7 +12,7 @@
     <div class="px-0 container col-sm-11 ">
         <div class="py-1">
             <div class="container p-0">
-                <img src="{{@BASE}}/includes/msc-logo.png" style="height:60px">
+                <img src="{{@BASE}}/includes/msc-logo.png" alt="" style="height:60px">
             </div>
         </div>
         <h3 class="font-logo pt-1">TIMESHEETS</h3>
@@ -36,7 +36,7 @@
             </ul>
             <form class="form-inline my-2 mt-3 my-lg-0">
                 <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">
-                <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>
+                <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="my-1 fas fa-search"></i>
                 </button>
             </form>
         </div>

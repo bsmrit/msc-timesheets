@@ -27,8 +27,8 @@ function getConnection() {
 
 /**
  * Adds a new employee to db.
- * @param $fName Employee first name.
- * @param $lName Employee last name.
+ * @param $fName employee's first name.
+ * @param $lName employee's last name.
  */
 function setNewEmployee($fName, $lName) {
     $connection = getConnection();
@@ -90,8 +90,8 @@ function getEmployeeNames() {
 
 /**
  * Returns status for a single given employee (or all employees with given first and last names).
- * @param $fName Employee first name.
- * @param $lName Employee last name.
+ * @param $fName Employee's first name.
+ * @param $lName Employee's last name.
  * @return array|null Single status in single entry array.
  */
 function getEmployeeStatus($fName, $lName) {
@@ -108,8 +108,8 @@ function getEmployeeStatus($fName, $lName) {
 
 /**
  * Toggles the status of the given employee (if IN toggles to OUT and vice versa).
- * @param $fName Employee first name.
- * @param $lName Employee last name.
+ * @param $fName Employee's first name.
+ * @param $lName Employee's last name.
  * @return array|null Execution result as single entry in array.
  */
 function toggleEmployeeStatus($fName, $lName) {
