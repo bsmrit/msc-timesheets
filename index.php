@@ -22,17 +22,46 @@
         echo $fatFree->get('ERROR.text');
     });
 
-    // define some routes
-    $fatFree->route('GET /employeeInOut', function() {
-        displayEmployeeInOut();
+    // *** ROUTES ***
+    // --- route for main employee check in/out page
+    $fatFree->route('GET /employeeInOut', function($fatFree) {
+        displayEmployeeInOut($fatFree);
     });
 
+    // --- admin only route for the admin (add/remove employees) page
     $fatFree->route('GET /welcome', function() {
-        getWelcomePage();
+        // check if user is admin
+        if($_SESSION['usertype'] == "admin") {
+            getWelcomePage();
+        }
+        else {
+            echo "You do not have permissions necessary to view this page."; // replace with more elegant page later
+        }
     });
 
+    // --- admin only route for the receptionist page
     $fatFree->route('GET /reception', function() {
-        getReceptionPage();
+        // check if user is admin
+        if($_SESSION['usertype'] == "admin") {
+            getReceptionPage();
+        }
+        else {
+            echo "You do not have permissions necessary to view this page."; // replace with more elegant page later
+        }
+    });
+
+    // --- route for showing sign out
+    $fatFree->route('GET /signOut', function($fatFree) {
+        session_destroy(); // destroy the session
+        displayEmployeeInOut($fatFree); // sign out leads you back to the employee check in page
+    });
+
+    $fatFree->route('POST /reception', function($fatFree) {
+        getLoginData($fatFree);
+    });
+
+    $fatFree->route('POST /employeeInOut', function($fatFree) {
+        getLoginData($fatFree);
     });
 
     $fatFree->run();

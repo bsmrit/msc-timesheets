@@ -8,38 +8,47 @@
  * On load populate the autofill box by requesting all names from db. Add listeners to employee name submit and status
  * toggle buttons.
  */
+var counter;
 $(document).ready(function () {
 
     populateAutofill(); // go to db, get names, populate autofill
     clock();
 
+    // var input = document.getElementById('myInput');
+    // input.addEventListener("input", function (e) {
+    //     event.preventDefault();
+    //     val = this.value;
+    //     counter = val.length;
+    //     console.log('counter.length: ' + counter);//-------------------------------
+    //
+    //     // get name out of text input and split into firstName and lastName variables
+    //     var oneCombinedName1 = $("#myInput").val();
+    //     console.log("drop down: " + oneCombinedName1);//---------------------------
+    //
+    //     var splitName = oneCombinedName1.split(" ");
+    //     getEmployeeStatus(splitName[0], splitName[1]);
+    //
+    //     // return counter.length;
+    // });
+
+    $(".autocomplete").on("click", function () {
+        event.preventDefault();
+        getAndCombineNames();
+    });
+
     // listener for employee name submit button -- will trigger getting employee status from db
-    $("#employeeNameSubmit").on("click", function() {
-        event.preventDefault();
-
-        // get name out of text input and split into firstName and lastName variables
-        var oneCombinedName = $("#myInput").val();
-        var splitName = oneCombinedName.split(" ");
-
-        getEmployeeStatus(splitName[0], splitName[1]);
-    });
-
-    // listener that does exact same thing as when the submit button is clicked, but does it whenever the input box
-    // loses focus -- makes the page more responsive
-    /* Current not used -- for some reason it interferes with the autofill
-    $("#myInput").on("change", function() {
-        event.preventDefault();
-
-        // get name out of text input and split into firstName and lastName variables
-        var oneCombinedName = $("#myInput").val();
-        var splitName = oneCombinedName.split(" ");
-
-        getEmployeeStatus(splitName[0], splitName[1]);
-    });
-    */
+    // $("#employeeNameSubmit").on("click", function () {
+    //     event.preventDefault();
+    //
+    //     // get name out of text input and split into firstName and lastName variables
+    //     var oneCombinedName = $("#myInput").val();
+    //     var splitName = oneCombinedName.split(" ");
+    //
+    //     getEmployeeStatus(splitName[0], splitName[1]);
+    // });
 
     // listener for toggling employee status in the database -- works only when button is not disabled
-    $("#toggleButton").on("click", function() {
+    $("#toggleButton").on("click", function () {
 
         // get name out of text input and split into firstName and lastName variables
         var oneCombinedName = $("#myInput").val();
@@ -47,24 +56,18 @@ $(document).ready(function () {
 
         toggleEmployeeStatus(splitName[0], splitName[1]);
     });
-
-    // listener for removing alert and disabling check in/out button if user change the name in the input box
-    // eliminates the possibility of putting in correct name, hitting submit, changing the name to an incorrect
-    // name, and then hitting check in/out button
-    // also recall that 'input' event fires on ALL character entry, whereas 'change' only fires when you lose focus
-    // on the input
-    $("#myInput").on("input", function() {
-        $("#statusAlert").remove();
-        $("#toggleButton").removeClass().addClass("btn btn-outline-secondary");
-        $("#toggleButton").html("Enter name above");
-        $("#toggleButton").attr("disabled", "disabled");
-    })
-
 });
 
+function getAndCombineNames() {
+    var oneCombinedName1 = $("#myInput").val();
+    if (oneCombinedName1.length != 0) {
+        var splitName = oneCombinedName1.split(" ");
+        getEmployeeStatus(splitName[0], splitName[1]);
+    }
+}
+
 /**
- * Executes ajax to toggle employee status in db, and then calls getEmployeeStatus function in order to check
- * the new status and set alert and toggle button appearance to the correct new appearance.
+ * Executes ajax to toggle employee status in db, and toggles alert and toggle button appearance.
  * @param firstName Employee first name.
  * @param lastName Employee last name.
  */
@@ -84,18 +87,23 @@ function toggleEmployeeStatus(firstName, lastName) {
         },
         success: function (data, status, response) {
 
-            // now that we've toggled, retrieve the new status and update the page based on new status
-            // recall that this function not only gets the status, it changes the alert and button to appropriate
-            // in, out, or invalid status
-            getEmployeeStatus(firstName, lastName);
+            // remove any alerts that exist
+            $("#statusAlert").remove();
 
+            // toggle the visuals on the page to reflect the toggled class
+            if ($("#toggleButton").html() == "Check in") {
+                setVisualsEmployeeIn();
+            }
+            else {
+                setVisualsEmployeeOut();
+            }
         }
     });
 }
 
 /**
- * Retrieves all employee names from the db and stores in a "combinedNames" array, which is used to populate
- * the name autofill input box.
+ * Retrieves all employee names from the db and stores in a "combinedNames" array,
+ * which is used to populate the name autofill input box.
  */
 function populateAutofill() {
 
@@ -116,12 +124,19 @@ function populateAutofill() {
             var combinedNames = new Array();
 
             // for each element in the array of json objects, create a combined name in the combinedNames array
-            for(var i = 0; i < json.length; i++) {
+            for (var i = 0; i < json.length; i++) {
                 combinedNames.push(json[i].first_name + " " + json[i].last_name);
             }
 
-            //this autocomplete function (from W3 Schools -- see below) will implement the autocomplete functionality
-            autocomplete(document.getElementById("myInput"), combinedNames);
+            //If there is input call autocomplete and checkName functions
+            var inp = document.getElementById("myInput");
+            if (inp != null) {
+                autocomplete(inp, combinedNames);
+                checkNames(inp);
+            }
+
+            arrayOfArrays.push("empty");
+            arrayOfArrays.push(combinedNames);
         }
     });
 }
@@ -134,57 +149,60 @@ function setVisualsEmployeeOut() {
     var noticeDiv = document.createElement("div");
 
     noticeDiv.setAttribute('id', 'statusAlert');
-    noticeDiv.setAttribute('class', 'alert alert-info text-center');
-    noticeDiv.setAttribute('role', 'alert');
+    noticeDiv.setAttribute('class', 'text-center my-3 radius');
+    // noticeDiv.setAttribute('role', 'alert');
     noticeDiv.setAttribute('style', 'width:100%;');
     noticeDiv.innerHTML = "You are currently OUT";
     $("#alertCol").append(noticeDiv);
 
-    $("#toggleButton").removeClass().addClass("btn btn-success");
+    $("#toggleButton").removeClass().addClass("btn btn-success radius");
     $("#toggleButton").html("Check in");
-    $("#toggleButton").removeAttr("disabled");
+    // $("#toggleButton").removeAttr("disabled");
+    $('#toggleButton:hidden').show("fast");
 }
 
 /**
  * Utility function for setting alert and button to show that employee is IN.
- */
-function setVisualsEmployeeIn() {
+ */function setVisualsEmployeeIn() {
 
     var noticeDiv = document.createElement("div");
 
     noticeDiv.setAttribute('id', 'statusAlert');
-    noticeDiv.setAttribute('class', 'alert alert-success text-center');
-    noticeDiv.setAttribute('role', 'alert');
+    noticeDiv.setAttribute('class', 'text-center my-3 radius');
+    // noticeDiv.setAttribute('role', 'alert');
     noticeDiv.setAttribute('style', 'width:100%;');
     noticeDiv.innerHTML = "You are currently IN";
     $("#alertCol").append(noticeDiv);
 
-    $("#toggleButton").removeClass().addClass("btn btn-info");
+    $("#toggleButton").removeClass().addClass("btn btn-info radius");
     $("#toggleButton").html("Check out");
-    $("#toggleButton").removeAttr("disabled");
+    // $("#toggleButton").removeAttr("disabled");
+    $('#toggleButton:hidden').show("fast");
 }
+
 
 /**
  * Utility function for setting alert and button to show employee name was invalid.
  */
 function setVisualsInvalid() {
-
-    var noticeDiv = document.createElement("div");
-
-    noticeDiv.setAttribute('id', 'statusAlert');
-    noticeDiv.setAttribute('class', 'alert alert-danger text-center');
-    noticeDiv.setAttribute('role', 'alert');
-    noticeDiv.setAttribute('style', 'width:100%;');
-    noticeDiv.innerHTML = "Invalid employee name";
-    $("#alertCol").append(noticeDiv);
-
-    $("#toggleButton").removeClass().addClass("btn btn-outline-secondary");
-    $("#toggleButton").html("Enter name above");
-    $("#toggleButton").attr("disabled", "disabled");
+    // var noticeDiv = document.createElement("div");
+    // noticeDiv.setAttribute('id', 'statusAlert');
+    // noticeDiv.setAttribute('class', 'statusAlert text-center radius');
+    // noticeDiv.setAttribute('style', 'width:100%;');
+    // noticeDiv.setAttribute('style', 'color:red;');
+    // noticeDiv.innerHTML = "Invalid employee name";
+    $("#statusAlert").show('fast');
+    // $("#alertCol").append(noticeDiv);
+    $("#myInput").attr('style', 'border-color:red;');
+    // $("#toggleButton").removeClass().addClass("btn btn-outline-secondary radius");
+    // $("#toggleButton").html("Enter name above");
+    // $("#toggleButton").attr("disabled", "disabled");
+    // $('#toggleButton:hidden').show("fast");
 }
 
 /**
- * Gets employee status from the database via ajax and modifies alert and button to display employee status.
+ * Gets employee status from the database via ajax and modifies alert and
+ * button to display employee status.
  * @param firstName Employee first name.
  * @param lastName Employee last name.
  */
@@ -202,7 +220,7 @@ function getEmployeeStatus(firstName, lastName) {
         error: function (response, status, error) {
             alert("error: " + error);
         },
-        success: function(data, status, response) {
+        success: function (data, status, response) {
 
             // remove any existing alert, since next we'll either be posting a new status alert or error in its place
             $("#statusAlert").remove();
@@ -213,32 +231,109 @@ function getEmployeeStatus(firstName, lastName) {
                 var statusCode = JSON.parse(data).status;
 
                 // set the correct alert and button type depending on employee status returned by ajax
-                if(statusCode == 0) { setVisualsEmployeeOut(); }
-                else if(statusCode == 1) { setVisualsEmployeeIn(); }
+                if (statusCode == 0) {
+                    setVisualsEmployeeOut();
+                }
+                else if (statusCode == 1) {
+                    setVisualsEmployeeIn();
+                }
             }
             // If query returned null string show error message and deactivate toggle button
-            else {
-                setVisualsInvalid();
-            }
+            // else {
+            //     setVisualsInvalid();
+            // }
         }
     });
 }
 
-// -------------------- START autocomplete from W3 schools --------------------
+
+var arrayWithMatch = [];
+var arrayOfArrays = [];//arrayOfArrays[0]
+
+// let letterMatcher = true;
+
+// let intialArray = [];
+
 /**
- * Autocomplete function from W3 Schools.
+ * Defines where must be displayed alert - Invalid employee name ".
  * @param inp The text field element to become an autofill.
- * @param arr The array of possible values to be used in the autofill.
  */
+function checkNames(inp) {
+    // execute a function when someone writes in the text field:
+    inp.addEventListener("input", function (e) {
+        var val = this.value;
+        console.log("--------------------------");
+        for (i = 0; i < arrayOfArrays[val.length].length; i++) {
+
+            if (val.length == 0) {
+                console.log("ZERO");
+                // console.log("current array: " + arrayWithMatch);
+                // arrayWithMatch = arrayOfArrays[1];
+                return;
+            }
+            // else if (arrayWithMatch.length == 0) {
+            //     // console.log("equal");
+            //     getAndCombineNames();
+            //     $(".autocomplete-items").remove();
+            //     return;
+            // }
+            else if (val.toUpperCase().charAt(val.length - 1) == arrayOfArrays[val.length][i].toUpperCase().charAt(val.length - 1)) {
+                // console.log("val: " + val.toUpperCase().charAt(val.length-1));
+                // console.log("arr[i]: " + intialArray[i].toUpperCase().charAt(val.length-1));
+                arrayWithMatch.push(arrayOfArrays[val.length][i]);
+                // console.log(arrayWithMatch);
+                // letterMatcher = false;
+            }
+            // if (intialArray[i].toUpperCase().includes(val.toUpperCase())) {
+            //     // console.log("contains");
+            //
+            // }
+            // if (!intialArray[i].toUpperCase().includes(val.toUpperCase())) {
+            //     // console.log("does not contain");
+            //
+            // }
+        }
+        console.log("arrayWithMatch: " + arrayWithMatch);
+        console.log("arrayWithMatch length: " + arrayWithMatch.length);
+        console.log("arrayOfArrays BEFORE: " + arrayOfArrays);
+
+        if (arrayWithMatch.length == 0) {
+            return;
+            console.log('added aeny away');
+            arrayOfArrays[val.length + 1] = arrayWithMatch;
+        }
+
+        console.log("current array: " + arrayOfArrays[val.length]);
+        console.log("arrayOfArrays AFTER: " + arrayOfArrays);
+        arrayWithMatch = [];
+        console.log("num of names in array: " + arrayOfArrays[val.length].length);
+        console.log("num of letters: " + val.length);
+
+        if (arrayOfArrays[val.length].length == 0 && val.length > 0) {
+            console.log("opps");
+            setVisualsInvalid();
+        }
+
+        /*close any already open lists of autocompleted values*/
+        if (!val) {
+            removeVisualsEmployeeOut();
+            return false;
+        }
+    })
+}
+
 function autocomplete(inp, arr) {
     var currentFocus;
 
     // execute a function when someone writes in the text field:
-    inp.addEventListener("input", function(e) {
+    inp.addEventListener("input", function (e) {
         var a, b, i, val = this.value;
         /*close any already open lists of autocompleted values*/
         closeAllLists();
-        if (!val) { return false;}
+        if (!val) {
+            removeVisualsEmployeeOut();
+            return false;
+        }
         currentFocus = -1;
         /*create a DIV element that will contain the items (values):*/
         a = document.createElement("DIV");
@@ -258,7 +353,7 @@ function autocomplete(inp, arr) {
                 /*insert a input field that will hold the current array item's value:*/
                 b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
                 /*execute a function when someone clicks on the item value (DIV element):*/
-                b.addEventListener("click", function(e) {
+                b.addEventListener("click", function (e) {
                     /*insert the value for the autocomplete text field:*/
                     inp.value = this.getElementsByTagName("input")[0].value;
                     /*close the list of autocompleted values,
@@ -271,7 +366,7 @@ function autocomplete(inp, arr) {
     });
 
     // execute a function when someone presses a key on the keyboard
-    inp.addEventListener("keydown", function(e) {
+    inp.addEventListener("keydown", function (e) {
         var x = document.getElementById(this.id + "autocomplete-list");
         if (x) x = x.getElementsByTagName("div");
         if (e.keyCode == 40) {
@@ -330,6 +425,7 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
 }
+
 // -------------------- END autocomplete from W3 schools --------------------
 
 function clock() {
@@ -348,3 +444,19 @@ function display_c() {
     var refresh = 1000; // Refresh rate in milli seconds
     var time= setTimeout('clock()', refresh);
 }
+
+
+/**
+ * Utility function for remove alert and button to show that employee is OUT.
+ */
+function removeVisualsEmployeeOut() {
+    // console.log("removed");
+    $("#statusAlert").remove();
+
+    $("#toggleButton").html("");
+    $('#toggleButton').hide("fast");
+    $(".statusAlert").hide('fast');
+    $("#myInput").attr('style', 'border-color:none;');
+}
+
+

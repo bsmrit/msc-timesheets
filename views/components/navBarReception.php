@@ -23,7 +23,7 @@
         </button>
 
         <div class="collapse navbar-collapse text-right" id="navbarColor01">
-            <ul class="navbar-nav mr-auto ml-4">
+            <ul class="navbar-nav ml-4">
                 <li class="nav-item">
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/employeeInOut">CHECK-IN</a>
                 </li>
@@ -34,9 +34,14 @@
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/welcome">ADMIN</a>
                 </li>
             </ul>
+            <ul class="navbar-nav ml-auto ml-4">
+                <li class="nav-item">
+                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/signOut">SIGN OUT</a>
+                </li>
+            </ul>
             <form class="form-inline my-2 mt-3 my-lg-0">
                 <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">
-                <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="my-1 fas fa-search"></i>
+                <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>
                 </button>
             </form>
         </div>

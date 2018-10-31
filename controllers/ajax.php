@@ -44,9 +44,14 @@ require '../models/models.php';
     function ajaxInsertNewEmployeeToDB() {
         $firstName = $_GET['firstName'];
         $lastName = $_GET['lastName'];
+        $admin=$_GET['admin'];
+        $loginName=$_GET['loginName'];
+        $password=$_GET['password'];
         echo $firstName;
         echo $lastName;
-        setNewEmployee($firstName, $lastName);
+        echo $loginName;
+        echo $password;
+        setNewEmployee($firstName, $lastName, $admin, $loginName, $password);
     }
 
     /**

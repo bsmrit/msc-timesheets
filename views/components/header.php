@@ -44,6 +44,6 @@
         <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js"
                 integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
                 crossorigin="anonymous"></script>
-        <link href="https://fonts.googleapis.com/css?family=Crete+Round:600" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:600" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Crete+Round" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     </head>

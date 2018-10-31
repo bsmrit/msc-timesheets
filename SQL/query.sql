@@ -6,6 +6,8 @@ CREATE TABLE time_sheets(
      first_name VARCHAR(50) NOT NULL,
      last_name VARCHAR(50) NOT NULL,
      status tinyint(1) NOT NULL,
+     username VARCHAR(50),
+     password VARCHAR(255),
      admin tinyint(1) NOT NULL
 );
 
@@ -15,6 +17,11 @@ VALUES
 ('Dmitry', 'Yushchev', 1, 1),
 ('Benjamin', 'Stevens', 0, 0),
 ('James', 'Way', 0, 0);
+
+INSERT INTO time_sheets
+(first_name, last_name, username, password, admin)
+VALUES
+('admin', 'admin', 'admin', 'admin1',1);
 
 CREATE TABLE employee(
       id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,

@@ -23,17 +23,38 @@
         </button>
 
         <div class="collapse navbar-collapse text-right" id="navbarColor01">
-            <ul class="navbar-nav mr-auto ml-4">
-                <li class="nav-item">
+            <ul class="navbar-nav ml-4">
+                <li class="nav-item active">
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/employeeInOut">CHECK-IN</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">RECEPTION</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/welcome">ADMIN</a>
-                </li>
+                <!-- if you are logged in as admin, show additional links -->
+                <check if="{{ @usertype=='admin' }}">
+                    <li class="nav-item">
+                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">RECEPTION</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/welcome">ADMIN</a>
+                    </li>
+                </check>
             </ul>
+            <!-- if you are logged in as an admin, show sign-out, if not show login -->
+            <check if="{{ @usertype=='admin' }}">
+                <true>
+                    <ul class="navbar-nav ml-auto ml-4">
+                        <li class="nav-item">
+                            <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/signOut">SIGN OUT</a>
+                        </li>
+                    </ul>
+                </true>
+                <false>
+                    <ul class="navbar-nav ml-auto ml-4">
+                        <li class="nav-item">
+                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">LOGIN</a>
+                        </li>
+                    </ul>
+                </false>
+            </check>
+
         </div>
     </div>
 </nav>
