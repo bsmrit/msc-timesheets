@@ -6,6 +6,9 @@
 
 $(document).ready(function () {
     getEmployees();
+    setInterval(function(){
+       $('#tableData').html(getEmployees());
+    }, 10000)
 });
 
 /**
@@ -36,9 +39,10 @@ function addToTable(currentNum, data) {
     let firstName = data[0];
     let lastName = data[1];
     let empStatus = data[2];
+    let comments = data[3];
     let cssClass = "table-danger";
-
-    if(empStatus == 0) {
+    
+    if(empStatus == 0) {;
         empStatus = "Out";
     }
     else
@@ -50,7 +54,8 @@ function addToTable(currentNum, data) {
         '<td class=" py-1">' + currentNum + '</td>' +
         '<td class=" py-1">' + firstName + '</td>' +
         '<td class=" py-1">' + lastName + '</td>' +
-        '<td class=" py-1">' + empStatus + '</td>' + '</tr>';
+        '<td class=" py-1">' + empStatus + '</td>' +
+        '<td class=" py-1">' + comments + '</td>' + '</tr>';
     $('#employeeTable').append(employee);
 }
 
@@ -60,9 +65,35 @@ function addToTable(currentNum, data) {
  */
 function displayTable(data) {
     let table = JSON.parse(data);
-
+    $("#tableData").remove(); //remove the old data
+    $("#employeeTable").append("<tbody id='" + "tableData'" + "></tbody>");
+    
     for (let i = 0; i < table.length; i++) {
-        let newRow = [table[i].first_name, table[i].last_name, table[i].empStatus];
+        let newRow = [table[i].first_name, table[i].last_name, table[i].empStatus, table[i].comments];
         addToTable(i + 1, newRow);
     }
+    if(document.getElementById("nameFilter") !== '') {
+        filterNames();
+    }
+}
+
+function filterNames() {
+  // Declare variables 
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("nameFilter");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("employeeTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    } 
+  }
 }

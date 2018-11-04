@@ -32,21 +32,21 @@
 
             <div id="admin-input" class="d-flex justify-content-center form-row">
                 <!--  L O G I N  N A M E  -->
-<!--                <div class="form-group col-md-5 my-2">-->
-<!--                    <input id="login-name" class="form-control radius border-dark"-->
-<!--                           name="login-name" type="text" placeholder="Login Name" value="">-->
-<!--                </div>-->
+                <!--                <div class="form-group col-md-5 my-2">-->
+                <!--                    <input id="login-name" class="form-control radius border-dark"-->
+                <!--                           name="login-name" type="text" placeholder="Login Name" value="">-->
+                <!--                </div>-->
                 <!--  P A S S W O R D  -->
-<!--                <div class="form-group col-md-5 my-2">-->
-<!--                    <input id="password" class="form-control radius border-dark"-->
-<!--                           name="password" type="password" placeholder="Password" value="">-->
-<!--                </div>-->
+                <!--                <div class="form-group col-md-5 my-2">-->
+                <!--                    <input id="password" class="form-control radius border-dark"-->
+                <!--                           name="password" type="password" placeholder="Password" value="">-->
+                <!--                </div>-->
             </div>
             <div class="d-flex justify-content-center form-row pt-2">
                 <div class="d-flex justify-content-between col-md-10 pl-0">
                     <!-- A D M I N  C H E C K  B O X -->
                     <div class="form-check col-md-5 ml-1">
-                        <input id="admin" class="form-check-input mt-2 mb-0" type="checkbox" >
+                        <input id="admin" class="form-check-input mt-2 mb-0" type="checkbox">
                         <label class="form-check-label mb-0" for="admin">
                             Add Administrative Permission
                         </label>
@@ -70,15 +70,15 @@
 <!--  T A B L E  -->
 <div class="container d-flex justify-content-left col-sm-7 mt-0 rounded gray">
 
-        <form class="form-inline my-2 mt-3 my-lg-0">
-            <!--  S E A R C H  B O X  -->
-<!--            <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">-->
-<!--            <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>-->
-<!--            </button>-->
+    <form class="form-inline my-2 mt-3 my-lg-0">
+        <!--  S E A R C H  B O X  -->
+        <!--            <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">-->
+        <!--            <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>-->
+        <!--            </button>-->
 
-            <!--  A D D   N E W   E M P L O Y E E   B T N  -->
-            <a id="employee" class="blue bor font1 btn btn-secondary mr-2 my-sm-0 radius" href="{{ @BASE.'/addEmployee' }}">Add Employee</a>
-        </form>
+        <!--  A D D   N E W   E M P L O Y E E   B T N  -->
+        <a id="employee" class="blue bor font1 btn btn-secondary mr-2 my-sm-0 radius" href="{{ @BASE.'/addEmployee' }}">Add Employee</a>
+    </form>
 
 </div>
 <div class="container d-flex justify-content-center col-sm-7 mt-2 rounded gray">
@@ -88,8 +88,8 @@
             <!--            <th scope="col">ID</th>-->
             <th scope="col">First Name</th>
             <th scope="col">Last Name</th>
+            <th scope="col">Username</th>
             <th scope="col" width="40px">Admin</th>
-            <!--            <th scope="col"></th>-->
             <!--            <th scope="col"></th>-->
         </tr>
         </thead>

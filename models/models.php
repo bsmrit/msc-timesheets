@@ -54,7 +54,7 @@
         $id = $_SESSION['id'];
 
         //query to get data from db
-        $query = "SELECT first_name, last_name, status AS 'empStatus' FROM time_sheets";
+        $query = "SELECT first_name, last_name, status AS 'empStatus', comments FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -75,7 +75,7 @@
         $id = $_SESSION['id'];
 
         //query to insert data to db
-        $query = "SELECT first_name, last_name, admin FROM time_sheets";
+        $query = "SELECT first_name, last_name, admin, username FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -111,11 +111,11 @@
      * @param $lName Employee's last name.
      * @return array|null Execution result as single entry in array.
      */
-    function toggleEmployeeStatus($fName, $lName) {
+    function toggleEmployeeStatus($fName, $lName, $comment) {
         $connection = getConnection();
 
         //query to toggle employee status
-        $query = "UPDATE time_sheets SET status = !status WHERE first_name = '$fName' AND last_name = '$lName'";
+        $query = "UPDATE time_sheets SET status = !status, comments = '$comment' WHERE first_name = '$fName' AND last_name = '$lName'";
         $results = mysqli_query($connection, $query);
 
         $result = mysqli_fetch_assoc($results);
@@ -133,8 +133,8 @@
         
         $user = $_POST['user'];
         $password = $_POST['password'];
-        echo "user+pass: " . $user . " "; // TEST CODE
-        echo $password; // TEST CODE
+//        echo "user+pass: " . $user . " "; // TEST CODE
+//        echo $password; // TEST CODE
 
         if($_POST['login'] == 'login') {
 
@@ -142,7 +142,7 @@
             checkPassword($password); // validate password
 
             if(empty($errors)) { // in no errors
-                echo " passed validation ";
+//                echo " passed validation ";
 
                 //get hashed password from db
                 $query = "SELECT id, username, password, admin FROM time_sheets WHERE username='$user'";
@@ -152,20 +152,20 @@
                 if($result) { // Query ran OK
                     $_SESSION['id'] = $data[0]; // $data[0] is the id retrieved from DB
 
-                    echo "password provided: ".$password."; "; // TEST CODE
-                    echo "data[0] (which is true password from DB): ".$data[2]; // TEST CODE
+//                    echo "password provided: ".$password."; "; // TEST CODE
+//                    echo "data[0] (which is true password from DB): ".$data[2]; // TEST CODE
 
                     // check if provided password matches DB password AND if the user is an admin
                     // if so, assign session variables
                     if($password == $data[2] && $data[3] == 1) {
-                        echo " password matched and user is an admin!!! ";
+//                        echo " password matched and user is an admin!!! ";
                         $_SESSION['id'] = $data[0]; // assign a session variable for the user id
                         $_SESSION['usertype'] = "admin";
-                        echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
-                        echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
+//                        echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
+//                        echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
                         return 1; // return 1 means successfully logged an admin in
                     } else { // password did not match OR the user is not an admin
-                        echo " password DID NOT match OR user is NOT an admin ";
+//                        echo " password DID NOT match OR user is NOT an admin ";
                         // lines below commented out for now -- later will be used to return specific error info
                         // $errors[] = 'Please check your email and password or try to register.';
                         // return reportErrors($errors);

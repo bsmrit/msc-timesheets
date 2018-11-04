@@ -30,7 +30,7 @@
     function displaySignOut() {
 
         // show the view
-        echo Template::instance()->render('views/signout.php');
+        echo Template::instance()->render('views/signOut.php');
     }
 
     /**
@@ -39,8 +39,7 @@
      * @param object $fatFree Fat-Free framework
      */
     function getLoginData($fatFree) {
-
-        echo " im in controller ";
+        
         //gather up the data needed
         $result = loginData();
         if($result == 0) { //display errors

@@ -1,6 +1,6 @@
 /**
  * JavaScript for employee check-in page.
- * @author Benjamin Stevens
+ * @author Benjamin Stevens, James Way
  * @version 1.0
  */
 
@@ -12,6 +12,7 @@ $(document).ready(function () {
 
     populateAutofill(); // go to db, get names, populate autofill
     clock();
+    document.getElementById("commentCol").style.display = "none";//Hide the comments box on page load
 
     // listener for employee name submit button -- will trigger getting employee status from db
     $("#employeeNameSubmit").on("click", function() {
@@ -44,8 +45,9 @@ $(document).ready(function () {
         // get name out of text input and split into firstName and lastName variables
         var oneCombinedName = $("#myInput").val();
         var splitName = oneCombinedName.split(" ");
-
-        toggleEmployeeStatus(splitName[0], splitName[1]);
+        var comment = $("#comment").val();
+        
+        toggleEmployeeStatus(splitName[0], splitName[1], comment);
     });
 
     // listener for removing alert and disabling check in/out button if user change the name in the input box
@@ -58,6 +60,8 @@ $(document).ready(function () {
         $("#toggleButton").removeClass().addClass("btn btn-outline-secondary");
         $("#toggleButton").html("Enter name above");
         $("#toggleButton").attr("disabled", "disabled");
+        document.getElementById("commentCol").style.display = "none";//Hide the comments box
+        $("#comment").val('');
     })
 
 });
@@ -68,7 +72,7 @@ $(document).ready(function () {
  * @param firstName Employee first name.
  * @param lastName Employee last name.
  */
-function toggleEmployeeStatus(firstName, lastName) {
+function toggleEmployeeStatus(firstName, lastName, comment) {
 
     $.ajax({
         type: "GET",
@@ -77,7 +81,8 @@ function toggleEmployeeStatus(firstName, lastName) {
         data: {
             command: "toggleEmployeeStatusInDB",
             firstName: firstName,
-            lastName: lastName
+            lastName: lastName,
+            comment: comment
         },
         error: function (response, status, error) {
             alert("error: " + error);
@@ -211,7 +216,8 @@ function getEmployeeStatus(firstName, lastName) {
             // If query returned valid status information show employee status
             if (data !== "null") {
                 var statusCode = JSON.parse(data).status;
-
+                
+                document.getElementById("commentCol").style.display = "block";//Found valid employee show the comments box
                 // set the correct alert and button type depending on employee status returned by ajax
                 if(statusCode == 0) { setVisualsEmployeeOut(); }
                 else if(statusCode == 1) { setVisualsEmployeeIn(); }
@@ -345,6 +351,6 @@ function clock() {
 }
 
 function display_c() {
-    var refresh = 1000; // Refresh rate in milli seconds
+    var refresh = 30000; // Refresh rate in milli seconds
     var time= setTimeout('clock()', refresh);
 }

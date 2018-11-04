@@ -184,8 +184,15 @@ function saveBtnAddEmployeePopup() {
     //if name is empty
     if (firstName.length === 0 || lastName.length === 0) {
         errors.push("You forgot enter first or last name.");
+        console.log("You forgot enter first or last name.")
         reportErrors(errors);
-    } else {
+    }
+    if (admin == 1 && loginName.length === 0 || admin == 1 && password.length === 0) {
+        errors.push("You forgot enter login or password.");
+        console.log("You forgot enter login or password.")
+        reportErrors(errors);
+    }
+    else {
         newEmployee = [firstName, lastName, admin, loginName, password];
         console.log("newEmployee: " + newEmployee);
         postNewEmployee(newEmployee);
@@ -210,23 +217,28 @@ function upperCaseNameNoWhiteSpace(data) {
  * @param data first, last name
  */
 function postNewEmployee(data) {
-
+    // console.log("2"+data);
     let firstName = data[0];
     let lastName = data[1];
 
     //checkmark
-    let ckeckmark;
+    let checkmark;
+    let username;
     if (data[2] == 1) {
-        ckeckmark = '&#9997';
-    } else {
-        ckeckmark = '';
-    }
+        checkmark = '&#9997';
+        username = data[3];
 
+    } else {
+        checkmark = '';
+        username = '';
+    }
+    
     let employee = '<tr id="">' +
         // '<td class=" py-1"></td>' +
         '<td class=" py-1">' + firstName + '</td>' +
         '<td class=" py-1">' + lastName + '</td>' +
-        '<td class=" py-0">' + ckeckmark + '</td>' +
+        '<td class=" py-1">' + username + '</td>' +
+        '<td class=" py-0">' + checkmark + '</td>' +
         // '<td class=" py-1"></td>' +
         // '<td class=" py-1"></td>' +
         '</tr>';
@@ -285,12 +297,11 @@ function uploadEmployeeNames() {
  * @param data first, last names
  */
 function refreshEmployeeNameTable(data) {
-
     let tableName = JSON.parse(data);
 
     for (let i = 0; i < tableName.length; i++) {
         // console.log(tableName[i]);
-        let newEmployee = [tableName[i].first_name, tableName[i].last_name, tableName[i].admin];
+        let newEmployee = [tableName[i].first_name, tableName[i].last_name, tableName[i].admin, tableName[i].username];
         postNewEmployee(newEmployee);
     }
 }

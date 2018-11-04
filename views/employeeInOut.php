@@ -2,7 +2,7 @@
     /**
      * View for the employee check-in page.
      *
-     * @author Benjamin Stevens
+     * @author Benjamin Stevens, James Way
      * @version 1.0
      */
 ?>
@@ -45,7 +45,16 @@
             <button id="toggleButton" class="btn btn-outline-secondary" style="width:100%" disabled>Enter name above</button>
         </div>
     </div>
+    <br>
+    <div id="commentRow" class="row justify-content-md-center">
+        <div id="commentCol" class="col-12 py-1 px-1" style="width:100%;">
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" rows="5" id="comment"></textarea>
+        </div>
+    </div>
 </div>
+
+
 
 </body>
 </html>

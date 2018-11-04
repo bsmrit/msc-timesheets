@@ -91,7 +91,7 @@ nav, #login-popup, #add-employee-popup {
     /*background-color: rgba(0, 0, 0, 1);*/
     /*-webkit-transition: 0.3s;*/
     /*overflow: auto;*/
-    transition: all 0.2s linear;
+    /*transition: all 0.2s linear;*/
 }
 
 #add-employee-popup{
@@ -103,5 +103,5 @@ nav, #login-popup, #add-employee-popup {
     /*background-color: rgba(0, 0, 0, 1);*/
     /*-webkit-transition: 0.3s;*/
     /*overflow: auto;*/
-    transition: all 0.2s linear;
+    /*transition: all 0.2s linear;*/
 }

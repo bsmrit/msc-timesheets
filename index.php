@@ -23,6 +23,11 @@
     });
 
     // *** ROUTES ***
+    // --- route main page directs to employeeInOut
+    $fatFree->route('GET /', function($fatFree) {
+        displayEmployeeInOut($fatFree);
+    });
+
     // --- route for main employee check in/out page
     $fatFree->route('GET /employeeInOut', function($fatFree) {
         displayEmployeeInOut($fatFree);
@@ -53,10 +58,15 @@
     // --- route for showing sign out
     $fatFree->route('GET /signOut', function($fatFree) {
         session_destroy(); // destroy the session
-        displayEmployeeInOut($fatFree); // sign out leads you back to the employee check in page
+        $_SESSION = [];
+        displaySignOut($fatFree);
     });
 
-    $fatFree->route('POST /reception', function($fatFree) {
+//    $fatFree->route('POST /reception', function($fatFree) {
+//        getLoginData($fatFree);
+//    });
+    
+    $fatFree->route('POST /', function($fatFree) {
         getLoginData($fatFree);
     });
 

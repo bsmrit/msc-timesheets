@@ -72,8 +72,9 @@ require '../models/models.php';
     function ajaxToggleEmployeeStatusInDB() {
         $firstName = $_GET['firstName'];
         $lastName = $_GET['lastName'];
+        $comment = $_GET['comment'];
 
-        $result = toggleEmployeeStatus($firstName, $lastName);
+        $result = toggleEmployeeStatus($firstName, $lastName, $comment);
 
         echo json_encode($result);
     }
