@@ -28,6 +28,7 @@
      * Adds a new employee to db.
      * @param $fName employee's first name.
      * @param $lName employee's last name.
+     * @return $lastId the id of the new employee just inserted
      */
     function setNewEmployee($fName, $lName, $admin, $loginName, $password) {
         $connection = getConnection();
@@ -43,6 +44,10 @@
             echo 'List not inserted.';
             exit;
         }
+
+        // get the id of the employee just inserted and return it
+        $lastId = mysqli_insert_id($connection);
+        return $lastId;
     }
 
     /**
@@ -54,7 +59,7 @@
         $id = $_SESSION['id'];
 
         //query to get data from db
-        $query = "SELECT first_name, last_name, status AS 'empStatus', comments FROM time_sheets";
+        $query = "SELECT first_name, last_name, status AS 'empStatus', comments, id FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -75,7 +80,7 @@
         $id = $_SESSION['id'];
 
         //query to insert data to db
-        $query = "SELECT first_name, last_name, admin, username FROM time_sheets";
+        $query = "SELECT first_name, last_name, admin, username, id FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -116,6 +121,17 @@
 
         //query to toggle employee status
         $query = "UPDATE time_sheets SET status = !status, comments = '$comment' WHERE first_name = '$fName' AND last_name = '$lName'";
+        $results = mysqli_query($connection, $query);
+
+        $result = mysqli_fetch_assoc($results);
+        return $result;
+    }
+
+    function deleteEmployee($employeeId) {
+        $connection = getConnection();
+
+        //query to delete the employee
+        $query = "DELETE FROM time_sheets WHERE id = $employeeId";
         $results = mysqli_query($connection, $query);
 
         $result = mysqli_fetch_assoc($results);

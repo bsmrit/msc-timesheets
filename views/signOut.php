@@ -18,7 +18,7 @@
     <div class="container m-auto">
         <div class="col-md-12 m-auto">
             <div class="jumbotron w-75 text-center m-auto">
-                <h2 class="display-10">You've been signed out. Redirecting you home...</h2>
+                <h2 class="display-12">You've been signed out. Redirecting to check-in...</h2>
                 <hr class="my-4">
                 <a class="lead" href="{{@BASE}}/">If you are not automatically redirected, please click here.</a>
             </div>

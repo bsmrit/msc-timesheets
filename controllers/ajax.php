@@ -26,6 +26,9 @@ require '../models/models.php';
         case 'toggleEmployeeStatusInDB':
             ajaxToggleEmployeeStatusInDB();
             break;
+        case 'deleteEmployeeInDB':
+            ajaxDeleteEmployeeInDB();
+            break;
     }
 
     // BEGIN FUNCTIONS
@@ -47,11 +50,10 @@ require '../models/models.php';
         $admin=$_GET['admin'];
         $loginName=$_GET['loginName'];
         $password=$_GET['password'];
-        echo $firstName;
-        echo $lastName;
-        echo $loginName;
-        echo $password;
-        setNewEmployee($firstName, $lastName, $admin, $loginName, $password);
+
+        $lastId = setNewEmployee($firstName, $lastName, $admin, $loginName, $password);
+
+        echo $lastId;
     }
 
     /**
@@ -85,4 +87,9 @@ require '../models/models.php';
     function ajaxGetEmployeesFromDB() {
         $employeeArray = getEmployees();
         echo json_encode($employeeArray);
+    }
+
+    function ajaxDeleteEmployeeInDB() {
+        $employeeId = $_GET['id'];
+        deleteEmployee($employeeId);
     }

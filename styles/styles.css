@@ -1,4 +1,4 @@
-nav, #login-popup, #add-employee-popup {
+nav, #login-popup, #add-employee-popup, #edit-employee-popup {
     box-shadow: 0 3px 11px -4px rgba(0, 0, 0, 0.75);
 }
 
@@ -83,10 +83,10 @@ nav, #login-popup, #add-employee-popup {
 }
 
 #login-popup {
-    width: 30%;
+    width: 40%;
     position: absolute;
     top: 25%;
-    right: 35%;
+    right: 33.3%;
     z-index: 100;
     /*background-color: rgba(0, 0, 0, 1);*/
     /*-webkit-transition: 0.3s;*/
@@ -94,11 +94,11 @@ nav, #login-popup, #add-employee-popup {
     /*transition: all 0.2s linear;*/
 }
 
-#add-employee-popup{
+#add-employee-popup, #edit-employee-popup{
     width: 70%;
     position: absolute;
-    top: 40%;
-    right: 15%;
+    /*top: 40%;*/
+    /*right: 15%;*/
     z-index: 100;
     /*background-color: rgba(0, 0, 0, 1);*/
     /*-webkit-transition: 0.3s;*/
