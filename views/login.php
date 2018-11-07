@@ -8,7 +8,7 @@
             <!--  name, password  -->
             <div class="px-4">
                 <input id="user" class=" white-fond my-3 form-control radius"
-                       name="user" type="text" placeholder="Name" value="">
+                       name="user" type="text" placeholder="Username" value="">
                 <input id="password" class="my-3 form-control radius"
                        name="password" type="password" placeholder="Password" value="">
                 <div class="col-sm-3 text-right pt-3"></div>

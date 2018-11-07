@@ -28,7 +28,7 @@
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/employeeInOut">CHECK-IN</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">RECEPTION</a>
+                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">STATUS BOARD</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/welcome">ADMIN</a>

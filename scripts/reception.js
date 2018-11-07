@@ -52,8 +52,8 @@ function addToTable(currentNum, data) {
     }
     let employee = '<tr class="' + cssClass + '" id="">' +
         '<td class=" py-1">' + currentNum + '</td>' +
-        '<td class=" py-1">' + firstName + '</td>' +
         '<td class=" py-1">' + lastName + '</td>' +
+        '<td class=" py-1">' + firstName + '</td>' +
         '<td class=" py-1">' + empStatus + '</td>' +
         '<td class=" py-1">' + comments + '</td>' + '</tr>';
     $('#employeeTable').append(employee);
@@ -87,7 +87,7 @@ function filterNames() {
 
   // Loop through all table rows, and hide those who don't match the search query
   for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[2];
+    td = tr[i].getElementsByTagName("td")[1];
     if (td) {
       if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
         tr[i].style.display = "";

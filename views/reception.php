@@ -19,8 +19,8 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">First</th>
             <th scope="col">Last</th>
+            <th scope="col">First</th>
             <th scope="col">Status</th>
             <th scope="col">Comments</th>
         </tr>

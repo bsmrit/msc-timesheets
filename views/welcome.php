@@ -91,7 +91,7 @@
                     </button>
                     <!--  S A V E  B U T T O N  -->
                     <button id="edit-employee-btn-save" name="edit-save" type="button" value="edit-save"
-                            class="btn col-md-3 btn-secondary mx-0 mb-3 radius blue">Save
+                            class="btn col-md-3 btn-secondary mx-0 mb-3 radius blue" disabled>Save
                     </button>
                 </div>
             </div>

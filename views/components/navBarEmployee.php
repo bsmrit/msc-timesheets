@@ -30,7 +30,7 @@
                 <!-- if you are logged in as admin, show additional links -->
                 <check if="{{ @usertype=='admin' }}">
                     <li class="nav-item">
-                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">RECEPTION</a>
+                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">STATUS BOARD</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/welcome">ADMIN</a>
@@ -49,7 +49,7 @@
                 <false>
                     <ul class="navbar-nav ml-auto ml-4">
                         <li class="nav-item">
-                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">LOGIN</a>
+                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">ADMIN LOGIN</a>
                         </li>
                     </ul>
                 </false>
