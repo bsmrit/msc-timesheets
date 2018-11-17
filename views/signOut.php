@@ -7,7 +7,7 @@
  */
 ?>
 
-<meta http-equiv="refresh" content="3;{{@BASE}}/employeeInOut">
+<meta http-equiv="refresh" content="2;{{@BASE}}">
 
 <include href="views/components/header.php"></include>
 <include href="views/components/navBarBlank.php"></include>

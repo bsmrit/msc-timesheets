@@ -1,10 +1,10 @@
 <?php
-/**
- * index.php for MSC Timesheets web app. All requests will reach this file first and be directed by fatFree routes.
- *
- * @author Benjamin Stevens, James Way, Dmitry Yushchev
- * @version 1.0
- */
+    /**
+     * index.php for MSC Timesheets web app. All requests will reach this file first and be directed by fatFree routes.
+     *
+     * @author Benjamin Stevens, James Way, Dmitry Yushchev
+     * @version 1.0
+     */
 
     // turn on global settings
     session_start();
@@ -33,24 +33,22 @@
         displayEmployeeInOut($fatFree);
     });
 
-    // --- admin only route for the admin (add/remove employees) page
-    $fatFree->route('GET /welcome', function() {
+    // --- admin & receptionist only route for the admin (add/remove employees) page
+    $fatFree->route('GET /welcome', function($fatFree) {
         // check if user is admin
-        if($_SESSION['usertype'] == "admin") {
-            getWelcomePage();
-        }
-        else {
+        if($_SESSION['usertype'] == "admin" || $_SESSION['usertype'] == "receptionist") {
+            getWelcomePage($fatFree);
+        } else {
             echo "You do not have permissions necessary to view this page."; // replace with more elegant page later
         }
     });
 
-    // --- admin only route for the receptionist page
-    $fatFree->route('GET /reception', function() {
+    // --- admin & receptionist  only route for the receptionist page
+    $fatFree->route('GET /reception', function($fatFree) {
         // check if user is admin
-        if($_SESSION['usertype'] == "admin") {
-            getReceptionPage();
-        }
-        else {
+        if($_SESSION['usertype'] == "admin" || $_SESSION['usertype'] == "receptionist") {
+            getReceptionPage($fatFree);
+        } else {
             echo "You do not have permissions necessary to view this page."; // replace with more elegant page later
         }
     });
@@ -62,10 +60,10 @@
         displaySignOut($fatFree);
     });
 
-//    $fatFree->route('POST /reception', function($fatFree) {
-//        getLoginData($fatFree);
-//    });
-    
+    //    $fatFree->route('POST /reception', function($fatFree) {
+    //        getLoginData($fatFree);
+    //    });
+
     $fatFree->route('POST /', function($fatFree) {
         getLoginData($fatFree);
     });
@@ -73,6 +71,7 @@
     $fatFree->route('POST /employeeInOut', function($fatFree) {
         getLoginData($fatFree);
     });
+
 
     $fatFree->run();
 ?>

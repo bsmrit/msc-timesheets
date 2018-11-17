@@ -9,7 +9,7 @@
 
 <include href="views/components/header.php"></include>
 <include href="views/components/navBarEmployee.php"></include>
-<include href="views/login.php"></include>
+<include href="views/components/login.php"></include>
 
 <br>
 <br>

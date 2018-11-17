@@ -8,119 +8,234 @@ $(document).ready(function () {
     console.log("JAVASCRIPT WORKING");
 
     uploadEmployeeNames();
-    //employee
+    //add employee
     $("#employee").on("click", showAddEmployeePopup);//new employee popup
     $("#close-employee-popup").on("click", hideAddEmployeePopup);
     $("#add-employee-btn-save").on("click", saveBtnAddEmployeePopup);
     $("#admin").change(adminInput);
+    $("#recep").change(adminInput);
+    $("#empl").change(adminInput);
+    //edit employee
+    $("#close-edit-employee-popup").on("click", hideEditEmployeePopup);
+    $("#edit-employee-btn-save").on("click", saveBtnEditEmployeePopup);
+    $("#edit-employee-btn-delete").on("click", deleteBtnEditEmployeePopup);
+    $("#empl-edit").change(adminInputEdit);
+    $("#admin-edit").change(adminInputEdit);
+    $("#recep-edit").change(adminInputEdit);
 
     //login
     $("#show-login").on("click", showLoginPopup);
     $("#close-login-popup").on("click", hideLoginPopup);
-    // $('#login').on("click", validateLogin);
-
-    // add listeners to all of the edit buttons
-    // 1. get all edit-button elements and put them in allEditButtons
-    // 2. loop through all those elements and add a click listener on each
-    // THIS ISN'T WORKING
-    /*
-    let allEditButtons = document.getElementsByClassName("edit-icon");
-    console.log(allEditButtons);
-    var i;
-    for(i = 0; i < allEditButtons.length; i++) {
-        allEditButtons[i].addEventListener("click", showAddEmployeePopup);
-        console.log(allEditButtons[i]);
-    }
-
-    $("#test").on("click", showAddEmployeePopup);
-    */
-
-    $("#close-edit-employee-popup").on("click", hideEditEmployeePopup);
-
-    // listener for the delete button on the edit employee popup -- pulls employee id from the popup itself
-    // the id is stored on the popup at the time the popup is opened -- it comes from the clicked <tr>
-    $("#edit-employee-btn-delete").on("click", deleteEmployee);
-
 });
 
-function adminInput() {
-    adminInputSection = '<div class="form-group col-md-5 my-2">' +
-        '<input id="login-name" class="form-control radius border-dark" name="login-name" ' +
-        'type="text" placeholder="Login Name" value="">' +
-        '</div>' +
-        '<div class="form-group col-md-5 my-2">' +
-        '<input id="password" class="form-control radius border-dark" name="password" ' +
+//Deletes employee in "Edit Employee" popup
+function deleteBtnEditEmployeePopup() {
+    console.log("dele" + employeeId);
+    $.ajax({
+        type: "GET",
+        url: "controllers/ajax.php",
+        cache: false,
+        data: {
+            command: "deleteEmployeeInDB",
+            employeeId: employee_Id
+        }
+    });
+    let trId = "#" + employee_Id;
+    $(trId).remove();
+}
+
+//Hides "Edit Employee" Popup
+function hideEditEmployeePopup() {
+    event.preventDefault();
+    $('#edit-employee-popup').hide("fast");
+}
+
+//Displays "Edit Employee" popup
+function showEditEmployeePopup() {
+    event.preventDefault();
+    hideAddEmployeePopup();
+    employeeId = event.target.id;
+    employeeId = parseInt(employeeId.replace('employeeId_', ''));
+
+    // console.log("clicked " + employeeId);
+    $('#edit-employee-popup:hidden').show("fast");
+
+    //get employee data by id from DB
+    getEmployeeDataById(employeeId);
+}
+
+//Retrieves employee data from DB by clicking on "edit" in the table
+function getEmployeeDataById(data) {
+    $.ajax({
+        type: "GET",
+        url: "controllers/ajax.php",
+        cache: false,
+        data: {
+            command: "getEmployeeDataById",
+            employeeId: data
+        },
+        error: function (response, status, error) {
+            alert("error: " + error);
+        },
+        success: function (data, status, response) {
+            // console.log("from DB: "+data);
+            let employeeData = JSON.parse(data);
+            console.log("emp from DB: " + employeeData);
+
+            //fills name and pin inputs of employee
+            $('#edit-first-name').val(employeeData[0]);
+            $('#edit-last-name').val(employeeData[1]);
+            $('#pin-edit').val(employeeData[6]);
+
+            //checks radio button and fills login name, password
+            let admin;
+            if (employeeData[2] == 1) { //this user is an admin
+                //checks radio button
+                $('input:radio[name=edit-admin]')[1].checked = true;
+                adminInputEdit();
+                //fills login name, password
+                $('#login-name-edit').val(employeeData[3]);
+                $('#password-edit').val(employeeData[4]);
+            }
+            else if (employeeData[2] == 2) { // this user is a receptionist
+                //checks radio button
+                $('input:radio[name=edit-admin]')[2].checked = true;
+                adminInputEdit();
+                //fills login name, password
+                $('#login-name-edit').val(employeeData[3]);
+                $('#password-edit').val(employeeData[4]);
+            }
+            else {
+                $("#admin-input-edit").html("");
+            }
+            employee_Id = employeeData[5];
+        }
+    });
+}
+
+//Saves changes in "Edit Employee" popup
+function saveBtnEditEmployeePopup() {
+    //retrives name from the inputs
+    let firstName = upperCaseNameNoWhiteSpace($("#edit-first-name").val());
+    let lastName = upperCaseNameNoWhiteSpace($("#edit-last-name").val());
+
+    //retrives login name, password  from the inputs
+    let employee;
+    let admin = $('input[name=edit-admin]:checked').val();
+
+    if ((admin == 1 || admin == 2) && !$("#admin-edit").is(':empty') && !$("#password-edit").is(':empty')) {
+        loginName = $("#login-name-edit").val();
+        password = $("#password-edit").val();
+    }
+    // else if (admin == 2 && !$("#admin-edit").is(':empty') && !$("#password-edit").is(':empty')) {
+    //     // admin = 2;
+    //     loginName = $("#login-name-edit").val();
+    //     password = $("#password-edit").val();
+    // }
+    else {
+        console.log("ch not checked");
+        // admin = 0;
+        loginName = "";
+        password = "";
+    }
+
+    employee = [firstName, lastName, admin, loginName, password];
+    if (firstName.length !== 0 && lastName.length !== 0) {
+        updateEmployeeInDb(employee);
+    }
+}
+
+function updateEmployeeInDb(data) {
+    $.ajax({
+        type: "GET",
+        url: "controllers/ajax.php",
+        cache: false,
+        data: {
+            command: "updateEmployeeInDb",
+            firstName: data[0],
+            lastName: data[1],
+            admin: data[2],
+            loginName: data[3],
+            password: data[4],
+            employeeId: employee_Id
+        },
+        success: function (data, status, response) {
+            let employeeData = JSON.parse(data);
+            hideEditEmployeePopup();
+            event.preventDefault();
+
+            //replace the raw in the table
+            let checkmark;
+            if (employeeData[2] == 1) {
+                checkmark = '<i class="fas fa-crown"></i>';
+            }
+            else if (employeeData[2] == 2) {
+                checkmark = '<i class="fas fa-phone"></i>';
+            } else {
+                checkmark = '';
+            }
+
+            let employeeId = "employeeId_" + data[4];
+            let del = '' +
+                '<div style="width: 4em"><i class="fas fa-edit"></i>' +
+                '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
+
+            let employeeRaw = '<tr id="' + employee_Id + '">' +
+                '<td class=" py-1">' + employeeData[0] + '</td>' +
+                '<td class=" py-1">' + employeeData[1] + '</td>' +
+                '<td class=" py-1"> pin </td>' +
+                '<td class=" py-1">' + employeeData[3] + '</td>' +
+                '<td class=" py-1">' + checkmark + '</td>' +
+                '<td class=" py-1">' + del + '</td>' +
+                '</tr>';
+
+            let trId = "#" + employee_Id;
+            $(trId).replaceWith(employeeRaw);
+        }
+    });
+}
+
+//Creates a div with login name and password
+function inputDiv(data1, data2) {
+    let inputs = '<div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 my-2">' +
+        '<input id="' + data1 + '" class="form-control radius border-dark" name="' + data1 + '" ' +
+        'type="text" placeholder="Login Name" value=""></div>' +
+        '<div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 my-2">' +
+        '<input id="' + data2 + '" class="form-control radius border-dark" name="' + data2 + '" ' +
         'type="password" placeholder="Password" value="">' +
-        '</div>';
+        '</div><div class="form-group col-md-2"></div>';
+    return inputs;
+}
 
-    if ($("#admin").is(":checked") && $(this).val() == "on") {
-        console.log("+");
-        $("#admin-input").append(adminInputSection);
-    }
-    else {
-        console.log("-");
-        $("#admin-input").html("");
-        // $("#admin-input").attr('style', 'background:red;');
+//Adds inputs for login name and password in "Add Employee" popup
+function adminInput() {
+    let inputDivSection = inputDiv("login-name", "password");
+    radioButtons("#admin-input", "admin", inputDivSection);
+}
+
+//Adds inputs for login name and password in "Edit Employee" popup
+function adminInputEdit() {
+    let inputDivSection = inputDiv("login-name-edit", "password-edit");
+    radioButtons("#admin-input-edit", "edit-admin", inputDivSection);
+}
+
+//Checks if inputs for login name and password needed
+function radioButtons(data1, data2, inputDiv) {
+
+    let tempString = "input[name=" + data2 + "]:checked";
+
+    let admin = $(tempString).val();
+    if (admin == 1 || admin == 2) {
+        // console.log("+");
+        $(data1).html("");
+        $(data1).append(inputDiv);
+    } else {
+        // console.log("-");
+        $(data1).html("");
     }
 }
 
-/**
- * validates login data
- */
-function validateLogin() {
-    //remove any old validation messages
-    // removeErrorDiv();
-
-    let user = $("#user").val();
-    let password = $("#password").val();
-    let errors = [];
-
-    //email - must have valid format
-    if (user.length < 3 || user.length > 10) {
-        errors.push("user must be 3-10 characters");
-    }
-
-    //password - must be 8-16 characters
-    if (password.length < 8 || password.length > 16) {
-        errors.push("password must be 8-16 characters");
-    }
-
-    //password - contain lowercase and uppercase letters
-    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password)) {
-        errors.push("password must contain lowercase and uppercase letters");
-    }
-    //password - contain lowercase and uppercase letters
-    if (!/[0-9]/.test(password)) {
-        errors.push("password must contain at list one digit");
-    }
-
-    //password - contain special characters
-    if (!/(\-)|(\=)|(\[)|(\])|(\;)|(\,)|(\.)|(\/)|(\~)|(\!)|(\@)|(\#)|(\$)|(\%)|(\^)|(\&)|(\*)|(\()|(\))|(\_)|(\+)|(\{)|(\})|(\:)|(\<)|(\>)|(\?)/.test(password)) {// ================space===============
-        errors.push("password must contain at list one symbol -=[]\\;,./~!@#$%^&*()_+{}|:<>?'");
-    }// /[^a-zA-Z\d]/
-
-    // report errors if there are any
-    if (errors.length > 0) {
-        reportErrors(errors);
-    }
-
-    //submit the form if appropriate
-    if (errors.length === 0) {
-        console.log("No errors");
-        // $('#welcome-form').attr('action', "/IT328/GIT/bookmark/welcome");
-        // $('#login-form').attr('action', "/msc-timesheets/welcome");
-        // $("#login-form").submit();
-    }
-    else {
-        event.preventDefault();
-        console.log("There are errors");
-    }
-}
-
-/**
- * Report the errors if needed
- * @param data array of errors
- */
+//Report the errors if needed
 function reportErrors(data) {
     $('.error-title:hidden').show("fast");
     $('div#error').show("fast");
@@ -130,106 +245,40 @@ function reportErrors(data) {
     });
 }
 
+//Displays the "Login" popup
 function showLoginPopup() {
     event.preventDefault();
     console.log("login btn clicked");
     $('#login-popup:hidden').show("fast");
 }
 
-/**
- *
- */
+//Hides the "Login" popup
 function hideLoginPopup() {
     event.preventDefault();
     $('#login-popup').hide("fast");
     console.log("hide login clicked");
 }
 
-/**
- * Displays add employee div
- */
+//Displays the "Add Employee" popup
 function showAddEmployeePopup() {
     event.preventDefault();
-
+    hideEditEmployeePopup();
     //hides other popups
-    $('#edit-employee-popup').hide("fast");
+    // removeErrorDiv();
 
-    // console.log("add employee");
     $('#add-employee-popup:hidden').show("fast");
-    adminInput();
+    // $("#admin").attr('disabled', false);
+    // $("#recep").attr('disabled', false);
+    // $("#admin").attr('checked', false);
+    // $("#recep").attr('checked', false);
+    // adminInput();
 }
 
-
-/**
- *
- */
+//Hides the "Add Employee" popup
 function hideAddEmployeePopup() {
     event.preventDefault();
+    $("#admin-input").html("");
     $('#add-employee-popup').hide("fast");
-
-}
-
-/**
- * Displays edit employee div
- */
-function showEditEmployeePopup() {
-    event.preventDefault();
-
-    // hides other popups
-    $('#add-employee-popup').hide("fast");
-
-    // console.log("add employee");
-    $('#edit-employee-popup:hidden').show("fast");
-
-    // grab first and last name data from the table and put it into the proper input boxes ('this') is the clicked <tr>
-    $("#edit-first-name").val($(this).children(".first-name-data").html());
-    $("#edit-last-name").val($(this).children(".last-name-data").html());
-
-    // employee ids on the table rows -- when a row is clicked grab the user-id from the row and store it on the popup
-    $("#edit-employee-popup").attr("user-id", $(this).attr("user-id"))
-
-    // FOR NOW NOT GOING TO DEAL WITH ADMIN INFO IN THE EDIT/DELETE POPUP
-    // adminInput();
-
-
-}
-
-function deleteEmployee() {
-
-    let id = $("#edit-employee-popup").attr("user-id");
-
-    console.log("Made it into delete employee js function for ajax and the id is: " + id);
-
-    $.ajax({
-        type: "GET",
-        url: "controllers/ajax.php",
-        cache: false,
-        data: {
-            command: "deleteEmployeeInDB",
-            id: id
-        },
-        error: function (response, status, error) {
-            alert("error: " + error);
-        },
-        success: function (data, status, response) {
-
-            // remove the table row associated with the employee just deleted
-            $("tr[user-id=" + id + "]").remove();
-
-            // hide the edit employee popup
-            hideEditEmployeePopup();
-
-        }
-    });
-}
-
-/**
- *
- */
-function hideEditEmployeePopup() {
-    event.preventDefault();
-    $('#edit-employee-popup').hide("fast");
-
 }
 
 /**
@@ -238,6 +287,7 @@ function hideEditEmployeePopup() {
  */
 function saveBtnAddEmployeePopup() {
     console.log("save btm pressed");
+
     // removeErrorDiv();
 
     //prevent the form from submitting to result.php
@@ -245,48 +295,72 @@ function saveBtnAddEmployeePopup() {
 
     let firstName = upperCaseNameNoWhiteSpace($("#first-name").val());
     let lastName = upperCaseNameNoWhiteSpace($("#last-name").val());
+
+    //pin
+    let pin = 0;
+    let tempPin = $("#pin").val();
+    tempPin = tempPin.replace(/\s/g, '');
+    if (tempPin.length == 4 && /[0-9]/.test(tempPin)) {
+        pin = tempPin;
+    }
+
     let loginName;
     let password;
 
     //admin check box
-    let admin;
-    if ($("#admin").is(":checked")) {
-        admin = 1;
-        loginName = $("#login-name").val();
-        // loginName.replace(/\s/g, '');
-        password = $("#password").val();
-        // password.replace(/\s/g, '');
+    let admin = $('input[name=admin]:checked').val();
+    console.log("A: " + admin);
 
-    }
-    else {
+    // if ($("#admin").is(":checked")) {
+    //     admin = 1;
+    //     loginName = $("#login-name").val();
+    //     password = $("#password").val();
+    // } else if ($("#recep").is(":checked")) {
+    //     admin = 2;
+    //     loginName = $("#login-name").val();
+    //     password = $("#password").val();
+    // } else {
+    //     admin = 0;
+    //     loginName, password = "";
+    // }
+
+    if (admin == 1) {
+        loginName = $("#login-name").val();
+        password = $("#password").val();
+    } else if (admin == 2) {
+        loginName = $("#login-name").val();
+        password = $("#password").val();
+    } else {
         admin = 0;
-        loginName = "";
-        password = "";
+        loginName, password = "";
     }
 
     let newEmployee = [];
     let errors = [];
 
     //if name is empty
-    if (firstName.length === 0 || lastName.length === 0) {
+    if (firstName.length == 0 || lastName.length == 0) {
         errors.push("You forgot enter first or last name.");
         console.log("You forgot enter first or last name.")
         reportErrors(errors);
     }
-    if (admin == 1 && loginName.length === 0 || admin == 1 && password.length === 0) {
+    // console.log("pinST: "+pin.toString());
+    // console.log("pinL: "+pin.toString().length);
+    if (pin == 0 || !pin.toString().length == 4) {
+        errors.push("You forgot enter PIN or it is less that 4 digits.");
+        console.log("You forgot enter PIN or it is less that 4 digits.")
+        reportErrors(errors);
+    }
+    else if (admin == 1 && loginName.length == 0 || admin == 1 && password.length == 0 ||
+        admin == 2 && loginName.length == 0 || admin == 2 && password.length == 0) {
         errors.push("You forgot enter login or password.");
         console.log("You forgot enter login or password.")
         reportErrors(errors);
     }
     else {
-        newEmployee = [firstName, lastName, admin, loginName, password];
+        newEmployee = [firstName, lastName, admin, loginName, password, pin];
         console.log("newEmployee: " + newEmployee);
-
-        // commented out postNewEmployee here in favor of putting it into the success block of insertNewEmployeeIntoDb
-        // this was done so that the id of the newly inserted employee could be retrieved (via mysqli_insert_id)
-        // and stored on the new <tr> created -- since the id will be required in case user wants to delete the new
-        // employee without refreshing the page
-        // postNewEmployee(newEmployee);
+        postNewEmployee(newEmployee);
         insertNewEmployeeIntoDb(newEmployee);
     }
 }
@@ -309,85 +383,106 @@ function upperCaseNameNoWhiteSpace(data) {
  */
 function postNewEmployee(data) {
 
+    // let employeeId = createTableRaw(data[0], data[1], data[2], data[3], data[4])
+    // console.log("data: " + data);
     let firstName = data[0];
     let lastName = data[1];
-    let id = data[4]; // this id will be set as an attribute on the table row below
+    let employeeId = "employeeId_" + data[4];
+    let pin = data[5];
 
     //checkmark
     let checkmark;
     let username;
-    if (data[2] == 1) { // if the user is an admin then data[2] will be 1
-        checkmark = '<span class="fas fa-crown"></span>'; // if an admin, set checkmark equal to icon value
-        username = data[3]; // if an admin, set username equal to the admins username
-
-    } else { // if the user is not an admin, checkmark and username are set to empty strings
+    if (data[2] == 1) {
+        checkmark = '<i class="fas fa-crown"></i>';
+        username = data[3];
+    }
+    else if (data[2] == 2) {
+        checkmark = '<i class="fas fa-phone"></i>';
+        username = data[3];
+    } else {
         checkmark = '';
         username = '';
     }
+    // let del = '&#9940; Delete';
+    let del = '' +
+        '<div style="width: 4em"><i class="fas fa-edit"></i>' +
+        '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
 
-
-    // REMOVE TR TAG MOMENTARILY
-    let employee = //'<tr id="" class="edit-row">' +
+    let employee = '<tr id="' + data[4] + '">' +
         // '<td class=" py-1"></td>' +
-        '<td class="first-name-data py-1">' + firstName + '</td>' +
-        '<td class="last-name-data py-1">' + lastName + '</td>' +
-        '<td class="username-data py-1">' + username + '</td>' +
-        '<td class="admin-data align-middle text-center py-0">' + checkmark + '</td>';
-        // '<td class="edit-cell align-middle text-center py-0"><span class="fas fa-edit edit-icon" user_id="ABC"></span></td>';
+        '<td class=" py-1">' + firstName + '</td>' +
+        '<td class=" py-1">' + lastName + '</td>' +
+        '<td class=" py-1">' + pin + '</td>' +
+        '<td class=" py-1">' + username + '</td>' +
+        '<td class=" py-1">' + checkmark + '</td>' +
+        '<td class=" py-1">' + del + '</td>' +
         // '<td class=" py-1"></td>' +
-        // '<td class=" py-1"></td>' +
-        //'</tr>';
-
-    var employeeElement = document.createElement("tr");
-    employeeElement.setAttribute("user-id", id); // the user id is set as an attribute on the table row <tr>
-    employeeElement.innerHTML = employee;
-    employeeElement.addEventListener("click", showEditEmployeePopup);
-    $('#time-sheet-table-div').append(employeeElement);
-
-    //REMOVED MOMENTARILY
-    //$('#time-sheet-table-div').append(employee);
+        '</tr>';
+    $('#time-sheet-table-div').append(employee);
     $('#time-sheet-table-div').prev().show();
 
     // this is where we create the ajax request and send it to the backend for storing note in DB
     hideAddEmployeePopup();
 }
 
+// function createTableRaw(fName, lName, admin, loginName, id) {
+//     // console.log("data: " + data);
+//     let firstName = fName;
+//     let lastName = lName;
+//     let employeeId = "employeeId_" + id;
+//
+//     //checkmark
+//     let checkmark;
+//     let username;
+//     if (admin == 1) {
+//         // checkmark = '&#9997;';
+//         checkmark = 'Admin';
+//         username = loginName;
+//     }
+//     else if (admin == 2) {
+//         // checkmark = '&#128222;';
+//         checkmark = 'Receptionist';
+//         username = loginName;
+//     } else {
+//         checkmark = '';
+//         username = '';
+//     }
+//     // let del = '&#9940; Delete';
+//     let del = '' +
+//         '<i class="far fa-edit"></i>' +
+//         '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" onclick="showEditEmployeePopup()" href="#">Edit</a>';
+//
+//     let employee = '<tr id="'+id+'">' +
+//         // '<td class=" py-1"></td>' +
+//         '<td class=" py-1">' + firstName + '</td>' +
+//         '<td class=" py-1">' + lastName + '</td>' +
+//         '<td class=" py-1">' + username + '</td>' +
+//         '<td class=" py-1">' + checkmark + '</td>' +
+//         '<td class=" py-1">' + del + '</td>' +
+//         // '<td class=" py-1"></td>' +
+//         '</tr>';
+//     return employee;
+// }
+
 /**
  * Creates ajax request, sends data to ajax.php
  * @param data first, last names
  */
-function insertNewEmployeeIntoDb(employeeArray) {
-    console.log("insertNewEmployeeIntoDb: " + employeeArray[0] + ", " + employeeArray[1]);
+function insertNewEmployeeIntoDb(data) {
+    // console.log("insertNewEmployeeIntoDb: " + data[0] + ", " + data[1]+", " + data[5]);
     $.ajax({
         type: "GET",
         url: "controllers/ajax.php",
         cache: false,
         data: {
             command: "insertNewEmployeeToDB",
-            firstName: employeeArray[0],
-            lastName: employeeArray[1],
-            admin: employeeArray[2],
-            loginName: employeeArray[3],
-            password: employeeArray[4]
-        },
-        error: function (response, status, error) {
-            alert("error: " + error);
-        },
-        success: function (data, status, response) {
-
-            // we should get back the ID of the newly inserted employee
-            // data is the new id of the newly inserted employee
-            console.log(data);
-
-            // postNewEmployee needs array with 1)
-            let newEmployee = [];
-            newEmployee[0] = employeeArray[0];
-            newEmployee[1] = employeeArray[1];
-            newEmployee[2] = employeeArray[2];
-            newEmployee[3] = employeeArray[3];
-            newEmployee[4] = data;
-
-            postNewEmployee(newEmployee);
+            firstName: data[0],
+            lastName: data[1],
+            admin: data[2],
+            loginName: data[3],
+            password: data[4],
+            pin: data[5]
         }
     });
 }
@@ -416,17 +511,14 @@ function uploadEmployeeNames() {
 
 /**
  * Uploads all employee data to each raw in the table
- * @param data takes a JSON string (not object) that includes first and last names, admin flag and username, and
- * employee id
+ * @param data first, last names
  */
 function refreshEmployeeNameTable(data) {
     let tableName = JSON.parse(data);
 
     for (let i = 0; i < tableName.length; i++) {
-        // create an newEmployee array with first and last name, admin flag, admin username, and the employee id
-        let newEmployee = [tableName[i].first_name, tableName[i].last_name, tableName[i].admin, tableName[i].username,
-            tableName[i].id];
-        // use the newEmployee array to post that employee onto the table
+        // console.log(tableName[i]);
+        let newEmployee = [tableName[i].first_name, tableName[i].last_name, tableName[i].admin, tableName[i].username, tableName[i].id, tableName[i].pin];
         postNewEmployee(newEmployee);
     }
 }

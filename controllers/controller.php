@@ -6,8 +6,10 @@
      * @version 1.0
      */
 
-    function getWelcomePage() {
+    function getWelcomePage($fatFree) {
 
+        // set variable for view to know whether user is admin
+        $fatFree->set('usertype', $_SESSION['usertype']);
         // show the view
         echo Template::instance()->render('views/welcome.php');
     }
@@ -21,7 +23,10 @@
         echo Template::instance()->render('views/employeeInOut.php');
     }
 
-    function getReceptionPage() {
+    function getReceptionPage($fatFree) {
+
+        // set variable for view to know whether user is admin
+        $fatFree->set('usertype', $_SESSION['usertype']);
 
         // show the view
         echo Template::instance()->render('views/reception.php');
@@ -39,24 +44,18 @@
      * @param object $fatFree Fat-Free framework
      */
     function getLoginData($fatFree) {
-        
         //gather up the data needed
         $result = loginData();
+
+        // set variable for view to know whether user is admin
+        $fatFree->set('usertype', $_SESSION['usertype']);
+
         if($result == 0) { //display errors
-            //set variables for displaying errors
-            //            $fatFree->set('block', $result[0]);
-            //            $fatFree->set('reportErrors', $result[1]);
-
-            //show the view
             echo Template::instance()->render('views/employeeInOut.php');
-        } else { //no errors redirect to personal personal route
-
-            //set pageTitle
-            //            $fatFree->set('pageTitle', 'Personal');
-
-            //show the view
+        } elseif($result == 1) { //route to admin page, logged in as admin
             echo Template::instance()->render('views/welcome.php');
-            //header('location: welcome.php');
+        } elseif($result == 2) { //route to reception page, logged in as receptionist
+            echo Template::instance()->render('views/reception.php');
         }
     }
 

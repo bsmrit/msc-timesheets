@@ -24,11 +24,12 @@
 
         <div class="collapse navbar-collapse text-right" id="navbarColor01">
             <ul class="navbar-nav ml-4">
-                <li class="nav-item active">
-                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/employeeInOut">CHECK-IN</a>
-                </li>
+
                 <!-- if you are logged in as admin, show additional links -->
-                <check if="{{ @usertype=='admin' }}">
+                <check if="{{ @usertype=='admin' || @usertype=='receptionist' }}">
+                    <li class="nav-item active">
+                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}">CHECK-IN</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">STATUS BOARD</a>
                     </li>
@@ -38,7 +39,7 @@
                 </check>
             </ul>
             <!-- if you are logged in as an admin, show sign-out, if not show login -->
-            <check if="{{ @usertype=='admin' }}">
+            <check if="{{ @usertype=='admin' || @usertype=='receptionist'}}">
                 <true>
                     <ul class="navbar-nav ml-auto ml-4">
                         <li class="nav-item">
@@ -49,7 +50,7 @@
                 <false>
                     <ul class="navbar-nav ml-auto ml-4">
                         <li class="nav-item">
-                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">ADMIN LOGIN</a>
+                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">LOGIN</a>
                         </li>
                     </ul>
                 </false>

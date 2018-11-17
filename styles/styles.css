@@ -83,7 +83,7 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup {
 }
 
 #login-popup {
-    width: 40%;
+    /*width: 40%;*/
     position: absolute;
     top: 25%;
     right: 33.3%;
@@ -95,7 +95,7 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup {
 }
 
 #add-employee-popup, #edit-employee-popup{
-    width: 70%;
+    /*width: 70%;*/
     position: absolute;
     /*top: 40%;*/
     /*right: 15%;*/
@@ -105,3 +105,8 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup {
     /*overflow: auto;*/
     /*transition: all 0.2s linear;*/
 }
+
+#time-sheet-table-div{
+    border-style: none;
+}
+

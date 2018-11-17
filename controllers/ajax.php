@@ -26,6 +26,12 @@ require '../models/models.php';
         case 'toggleEmployeeStatusInDB':
             ajaxToggleEmployeeStatusInDB();
             break;
+        case 'getEmployeeDataById':
+            ajaxGetEmployeeDataById();
+            break;
+        case 'updateEmployeeInDb':
+            ajaxUpdateEmployeeInDb();
+            break;
         case 'deleteEmployeeInDB':
             ajaxDeleteEmployeeInDB();
             break;
@@ -50,8 +56,9 @@ require '../models/models.php';
         $admin=$_GET['admin'];
         $loginName=$_GET['loginName'];
         $password=$_GET['password'];
+        $pin=$_GET['pin'];
 
-        $lastId = setNewEmployee($firstName, $lastName, $admin, $loginName, $password);
+        $lastId = setNewEmployee($firstName, $lastName, $admin, $loginName, $password, $pin);
 
         echo $lastId;
     }
@@ -90,6 +97,26 @@ require '../models/models.php';
     }
 
     function ajaxDeleteEmployeeInDB() {
-        $employeeId = $_GET['id'];
-        deleteEmployee($employeeId);
+        $employeeId = $_GET['employeeId'];
+        $result = deleteEmployee($employeeId);
+        echo json_encode($result);
+    }
+
+    function ajaxGetEmployeeDataById(){
+        $employeeId = $_GET['employeeId'];
+        $result = getEmployeeDataById($employeeId);
+        echo json_encode($result);
+    }
+
+    function ajaxUpdateEmployeeInDb(){
+        $firstName = $_GET['firstName'];
+        $lastName = $_GET['lastName'];
+        $admin=$_GET['admin'];
+        $loginName=$_GET['loginName'];
+        $password=$_GET['password'];
+        $employeeId=$_GET['employeeId'];
+        $pin=$_GET['pin'];
+        $result = updateEmployeeInDb($firstName, $lastName, $admin, $loginName, $password, $employeeId, $pin);
+        echo json_encode($result);
+
     }

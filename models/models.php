@@ -30,13 +30,13 @@
      * @param $lName employee's last name.
      * @return $lastId the id of the new employee just inserted
      */
-    function setNewEmployee($fName, $lName, $admin, $loginName, $password) {
+    function setNewEmployee($fName, $lName, $admin, $loginName, $password, $pin) {
         $connection = getConnection();
         $id = $_SESSION['id'];
 
         //query to insert data to db
         // BEN: does this work even though you're not setting status and admin??
-        $query = "INSERT INTO time_sheets (first_name, last_name, admin, username, password) VALUES('$fName', '$lName', '$admin', '$loginName', '$password')";
+        $query = "INSERT INTO time_sheets (first_name, last_name, admin, username, password, pin) VALUES('$fName', '$lName', '$admin', '$loginName', '$password', '$pin')";
         $results = mysqli_query($connection, $query);
 
         //check result
@@ -59,7 +59,7 @@
         $id = $_SESSION['id'];
 
         //query to get data from db
-        $query = "SELECT first_name, last_name, status AS 'empStatus', comments, id FROM time_sheets";
+        $query = "SELECT first_name, last_name, status AS 'empStatus', comments, id, pin FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -77,10 +77,10 @@
      */
     function getEmployeeNames() {
         $connection = getConnection();
-        $id = $_SESSION['id'];
+//        $id = $_SESSION['id'];
 
         //query to insert data to db
-        $query = "SELECT first_name, last_name, admin, username, id FROM time_sheets";
+        $query = "SELECT first_name, last_name, admin, username, id , pin FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -127,15 +127,43 @@
         return $result;
     }
 
+    function getEmployeeDataById($employeeId) {
+        $connection = getConnection();
+
+        //query to insert data to db
+        $query = "SELECT first_name, last_name, admin, username, password, id, pin FROM time_sheets WHERE id = '$employeeId'";
+        $result = @mysqli_query($connection, $query);
+        $data = @mysqli_fetch_row($result);
+
+        return $data;
+    }
+
+    function updateEmployeeInDb($firstName, $lastName, $admin, $loginName, $password, $employeeId, $pin) {
+        $connection = getConnection();
+
+        //query to insert data to db
+        $query = "UPDATE time_sheets SET first_name='$firstName', last_name='$lastName', 
+                  admin = $admin, username='$loginName', password='$password', pin='$pin' WHERE id='$employeeId'";
+        $result = @mysqli_query($connection, $query);
+        if($result) {
+            return getEmployeeDataById($employeeId);
+        } else {
+            return false;
+        }
+    }
+
     function deleteEmployee($employeeId) {
         $connection = getConnection();
 
         //query to delete the employee
-        $query = "DELETE FROM time_sheets WHERE id = $employeeId";
-        $results = mysqli_query($connection, $query);
+        $query = "DELETE FROM time_sheets WHERE id = '$employeeId'";
+        $result = mysqli_query($connection, $query);
 
-        $result = mysqli_fetch_assoc($results);
-        return $result;
+        if($result) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -146,11 +174,11 @@
     function loginData() {
         global $errors;
         $_SESSION['id'] = false;
-        
+
         $user = $_POST['user'];
         $password = $_POST['password'];
-//        echo "user+pass: " . $user . " "; // TEST CODE
-//        echo $password; // TEST CODE
+        //        echo "user+pass: " . $user . " "; // TEST CODE
+        //        echo $password; // TEST CODE
 
         if($_POST['login'] == 'login') {
 
@@ -158,7 +186,7 @@
             checkPassword($password); // validate password
 
             if(empty($errors)) { // in no errors
-//                echo " passed validation ";
+                //                echo " passed validation ";
 
                 //get hashed password from db
                 $query = "SELECT id, username, password, admin FROM time_sheets WHERE username='$user'";
@@ -168,20 +196,27 @@
                 if($result) { // Query ran OK
                     $_SESSION['id'] = $data[0]; // $data[0] is the id retrieved from DB
 
-//                    echo "password provided: ".$password."; "; // TEST CODE
-//                    echo "data[0] (which is true password from DB): ".$data[2]; // TEST CODE
+                    //                    echo "password provided: ".$password."; "; // TEST CODE
+                    //                    echo "data[0] (which is true password from DB): ".$data[2]; // TEST CODE
 
                     // check if provided password matches DB password AND if the user is an admin
                     // if so, assign session variables
                     if($password == $data[2] && $data[3] == 1) {
-//                        echo " password matched and user is an admin!!! ";
+                        //                        echo " password matched and user is an admin!!! ";
                         $_SESSION['id'] = $data[0]; // assign a session variable for the user id
                         $_SESSION['usertype'] = "admin";
-//                        echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
-//                        echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
+                        //echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
+                        //echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
                         return 1; // return 1 means successfully logged an admin in
+                    } elseif($password == $data[2] && $data[3] == 2) {
+                        //echo " password matched and user is an receptionist!!! ";
+                        $_SESSION['id'] = $data[0]; // assign a session variable for the user id
+                        $_SESSION['usertype'] = "receptionist";
+                        //echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
+                        //echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
+                        return 2; // return 1 means successfully logged an admin in
                     } else { // password did not match OR the user is not an admin
-//                        echo " password DID NOT match OR user is NOT an admin ";
+                        //                        echo " password DID NOT match OR user is NOT an admin ";
                         // lines below commented out for now -- later will be used to return specific error info
                         // $errors[] = 'Please check your email and password or try to register.';
                         // return reportErrors($errors);

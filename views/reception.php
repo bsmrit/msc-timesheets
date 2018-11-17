@@ -5,12 +5,10 @@
      * @author James Way
      * @version 1.0
      */
-
 ?>
 
 <include href="views/components/header.php"></include>
 <include href="views/components/navBarReception.php"></include>
-<include href="views/login.php"></include>
 <script src="{{ @BASE }}/scripts/reception.js?v={{ rand()}}"></script>
 
 <div class="container mt-3">
