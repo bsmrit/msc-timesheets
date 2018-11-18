@@ -8,22 +8,21 @@ $(document).ready(function () {
     console.log("JAVASCRIPT WORKING");
 
     uploadEmployeeNames();
-    //add employee
-    $("#employee").on("click", showAddEmployeePopup);//new employee popup
+    //add employee popup
+    $("#employee").on("click", showAddEmployeePopup);
     $("#close-employee-popup").on("click", hideAddEmployeePopup);
     $("#add-employee-btn-save").on("click", saveBtnAddEmployeePopup);
     $("#admin").change(adminInput);
     $("#recep").change(adminInput);
     $("#empl").change(adminInput);
-    //edit employee
+    //edit employee popup
     $("#close-edit-employee-popup").on("click", hideEditEmployeePopup);
     $("#edit-employee-btn-save").on("click", saveBtnEditEmployeePopup);
     $("#edit-employee-btn-delete").on("click", deleteBtnEditEmployeePopup);
     $("#empl-edit").change(adminInputEdit);
     $("#admin-edit").change(adminInputEdit);
     $("#recep-edit").change(adminInputEdit);
-
-    //login
+    //login popup
     $("#show-login").on("click", showLoginPopup);
     $("#close-login-popup").on("click", hideLoginPopup);
 });
@@ -42,6 +41,7 @@ function deleteBtnEditEmployeePopup() {
     });
     let trId = "#" + employee_Id;
     $(trId).remove();
+    hideEditEmployeePopup();
 }
 
 //Hides "Edit Employee" Popup
@@ -118,30 +118,43 @@ function saveBtnEditEmployeePopup() {
     //retrives name from the inputs
     let firstName = upperCaseNameNoWhiteSpace($("#edit-first-name").val());
     let lastName = upperCaseNameNoWhiteSpace($("#edit-last-name").val());
+    let pin = $("#pin-edit").val();
 
     //retrives login name, password  from the inputs
-    let employee;
     let admin = $('input[name=edit-admin]:checked').val();
+    let loginName;
+    let password;
+    let employee;
 
-    if ((admin == 1 || admin == 2) && !$("#admin-edit").is(':empty') && !$("#password-edit").is(':empty')) {
+
+    //if admin or recep password, login name are needed
+    if ((admin == 1 || admin == 2) && firstName.length !== 0 &&
+        lastName.length !== 0 && pin.length == 4 && !isNaN(pin)) {
         loginName = $("#login-name-edit").val();
         password = $("#password-edit").val();
-    }
-    // else if (admin == 2 && !$("#admin-edit").is(':empty') && !$("#password-edit").is(':empty')) {
-    //     // admin = 2;
-    //     loginName = $("#login-name-edit").val();
-    //     password = $("#password-edit").val();
-    // }
-    else {
-        console.log("ch not checked");
-        // admin = 0;
+
+        if (loginName.length !== 0 && password.length !== 0) {
+            console.log(loginName+", " + password);
+            console.log("admin or recep: " + employee);
+            employee = [firstName, lastName, admin, loginName, password, pin];
+            updateEmployeeInDb(employee);
+            hideEditEmployeePopup();
+        }
+    }//if employee password, login name not needed
+    else if (admin == 0 && firstName.length !== 0 &&
+        lastName.length !== 0 && pin.length == 4 && !isNaN(pin)) {
+
         loginName = "";
         password = "";
+        if (loginName.length == 0 && password.length == 0) {
+            employee = [firstName, lastName, admin, loginName, password, pin];
+            console.log("employee: " + employee);
+            updateEmployeeInDb(employee);
+            hideEditEmployeePopup();
+        }
     }
-
-    employee = [firstName, lastName, admin, loginName, password];
-    if (firstName.length !== 0 && lastName.length !== 0) {
-        updateEmployeeInDb(employee);
+    else {
+        console.log("Something is missing, emolpyee was not updated.");
     }
 }
 
@@ -157,10 +170,12 @@ function updateEmployeeInDb(data) {
             admin: data[2],
             loginName: data[3],
             password: data[4],
-            employeeId: employee_Id
+            employeeId: employee_Id,
+            pin: data[5]
         },
         success: function (data, status, response) {
             let employeeData = JSON.parse(data);
+            console.log("=: " + employeeData);
             hideEditEmployeePopup();
             event.preventDefault();
 
@@ -183,11 +198,10 @@ function updateEmployeeInDb(data) {
             let employeeRaw = '<tr id="' + employee_Id + '">' +
                 '<td class=" py-1">' + employeeData[0] + '</td>' +
                 '<td class=" py-1">' + employeeData[1] + '</td>' +
-                '<td class=" py-1"> pin </td>' +
+                '<td class=" py-1">' + employeeData[6] + '</td>' +
                 '<td class=" py-1">' + employeeData[3] + '</td>' +
                 '<td class=" py-1">' + checkmark + '</td>' +
-                '<td class=" py-1">' + del + '</td>' +
-                '</tr>';
+                '<td class=" py-1">' + del + '</td></tr>';
 
             let trId = "#" + employee_Id;
             $(trId).replaceWith(employeeRaw);
@@ -286,8 +300,7 @@ function hideAddEmployeePopup() {
  * If no errors pass data to postNewEmployee() and insertNewEmployeeIntoDb() functions;
  */
 function saveBtnAddEmployeePopup() {
-    console.log("save btm pressed");
-
+    // console.log("save btm pressed");
     // removeErrorDiv();
 
     //prevent the form from submitting to result.php
@@ -309,21 +322,7 @@ function saveBtnAddEmployeePopup() {
 
     //admin check box
     let admin = $('input[name=admin]:checked').val();
-    console.log("A: " + admin);
-
-    // if ($("#admin").is(":checked")) {
-    //     admin = 1;
-    //     loginName = $("#login-name").val();
-    //     password = $("#password").val();
-    // } else if ($("#recep").is(":checked")) {
-    //     admin = 2;
-    //     loginName = $("#login-name").val();
-    //     password = $("#password").val();
-    // } else {
-    //     admin = 0;
-    //     loginName, password = "";
-    // }
-
+    
     if (admin == 1) {
         loginName = $("#login-name").val();
         password = $("#password").val();
@@ -344,8 +343,7 @@ function saveBtnAddEmployeePopup() {
         console.log("You forgot enter first or last name.")
         reportErrors(errors);
     }
-    // console.log("pinST: "+pin.toString());
-    // console.log("pinL: "+pin.toString().length);
+
     if (pin == 0 || !pin.toString().length == 4) {
         errors.push("You forgot enter PIN or it is less that 4 digits.");
         console.log("You forgot enter PIN or it is less that 4 digits.")
@@ -384,7 +382,6 @@ function upperCaseNameNoWhiteSpace(data) {
 function postNewEmployee(data) {
 
     // let employeeId = createTableRaw(data[0], data[1], data[2], data[3], data[4])
-    // console.log("data: " + data);
     let firstName = data[0];
     let lastName = data[1];
     let employeeId = "employeeId_" + data[4];

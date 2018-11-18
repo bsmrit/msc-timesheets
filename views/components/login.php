@@ -1,6 +1,6 @@
 <!-- LOG IN  -->
 <!--<form id="login-form" action="{{ @BASE.'/welcome' }}" method="post">-->
-<div class="container d-flex justify-content-center col-sm-12 mt-4 gray">
+<div class="container login-container d-flex justify-content-center col-sm-12 mt-4 gray">
     <form id="login-form" action="" method="post">
         <div id="login-popup" class="container mt-5 pt-3 col-sm-4 bg-light" style="display:none;">
             <h5 id="close-login-popup" class="a btn float-right px-0 py-0 text-secondary radius">&#x2715;</h5>

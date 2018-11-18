@@ -10,6 +10,7 @@ body {
     /*the container must be positioned relative:*/
     position: relative;
     display: inline-block;
+    z-index: 9998 !important;
 }
 
 input {
@@ -73,4 +74,9 @@ input[type=submit] {
 .toggleButton{
     background-color: #448f77;
     color: red;
+}
+
+.statusText{
+    width: 100%;
+    font-weight: bold;
 }

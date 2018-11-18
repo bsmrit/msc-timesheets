@@ -110,3 +110,7 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup {
     border-style: none;
 }
 
+.login-container {
+    z-index: 9999 !important;
+}
+

@@ -35,6 +35,9 @@ require '../models/models.php';
         case 'deleteEmployeeInDB':
             ajaxDeleteEmployeeInDB();
             break;
+        case 'writeCommentIntoDB':
+            ajaxWriteCommentIntoDB();
+            break;
     }
 
     // BEGIN FUNCTIONS
@@ -69,8 +72,9 @@ require '../models/models.php';
     function ajaxGetEmployeeStatusFromDB() {
         $firstName = $_GET['firstName'];
         $lastName = $_GET['lastName'];
+        $employeePin = $_GET['employeePin'];
 
-        $employeeStatus = getEmployeeStatus($firstName, $lastName);
+        $employeeStatus = getEmployeeStatus($firstName, $lastName, $employeePin);
 
         echo json_encode($employeeStatus);
     }
@@ -102,13 +106,13 @@ require '../models/models.php';
         echo json_encode($result);
     }
 
-    function ajaxGetEmployeeDataById(){
+    function ajaxGetEmployeeDataById() {
         $employeeId = $_GET['employeeId'];
         $result = getEmployeeDataById($employeeId);
         echo json_encode($result);
     }
 
-    function ajaxUpdateEmployeeInDb(){
+    function ajaxUpdateEmployeeInDb() {
         $firstName = $_GET['firstName'];
         $lastName = $_GET['lastName'];
         $admin=$_GET['admin'];
@@ -119,4 +123,14 @@ require '../models/models.php';
         $result = updateEmployeeInDb($firstName, $lastName, $admin, $loginName, $password, $employeeId, $pin);
         echo json_encode($result);
 
+    }
+
+    function ajaxWriteCommentIntoDB() {
+        $firstName = $_GET['firstName'];
+        $lastName = $_GET['lastName'];
+        $comment = $_GET['comment'];
+
+        $result = writeComment($firstName, $lastName, $comment);
+
+        echo json_encode($result);
     }

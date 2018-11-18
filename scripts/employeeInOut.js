@@ -8,6 +8,12 @@
  * On load populate the autofill box by requesting all names from db. Add listeners to employee name submit and status
  * toggle buttons.
  */
+
+var userAction; // will store the action button clicked by the user
+// 1. Toggle With Comment
+// 2. Toggle Without Comment
+// 3. Comment Only
+
 $(document).ready(function () {
 
     populateAutofill(); // go to db, get names, populate autofill
@@ -22,32 +28,47 @@ $(document).ready(function () {
         var oneCombinedName = $("#myInput").val();
         var splitName = oneCombinedName.split(" ");
 
-        getEmployeeStatus(splitName[0], splitName[1]);
+        // get the employee PIN out of text input
+        var employeePin = $("#employeePin").val();
+
+        submitEmployee(splitName[0], splitName[1], employeePin);
     });
-
-    // listener that does exact same thing as when the submit button is clicked, but does it whenever the input box
-    // loses focus -- makes the page more responsive
-    /* Current not used -- for some reason it interferes with the autofill
-    $("#myInput").on("change", function() {
-        event.preventDefault();
-
-        // get name out of text input and split into firstName and lastName variables
-        var oneCombinedName = $("#myInput").val();
-        var splitName = oneCombinedName.split(" ");
-
-        getEmployeeStatus(splitName[0], splitName[1]);
-    });
-    */
 
     // listener for toggling employee status in the database -- works only when button is not disabled
-    $("#toggleButton").on("click", function() {
+    $(".toggleButton").on("click", function(event) {
 
         // get name out of text input and split into firstName and lastName variables
         var oneCombinedName = $("#myInput").val();
         var splitName = oneCombinedName.split(" ");
-        var comment = $("#comment").val();
-        
+
+        // determine what the comment will be
+        let comment;
+        if(event.target.id == "toggleWithoutCommentButton") {
+            userAction = "Toggle Without Comment";
+            comment = ""; // if toggle without comment button was clicked, set comment to empty string
+        } else {
+            userAction = "Toggle With Comment";
+            comment = $("#comment").val(); // else set comment to the input from comment text area
+        }
+
         toggleEmployeeStatus(splitName[0], splitName[1], comment);
+    });
+
+    // listener for the comment only button
+    $("#commentOnlyButton").on("click", function(event) {
+
+        // set global variable to indicate user elected to enter comment only
+        userAction = "Comment Only";
+
+        // get name out of text input and split into firstName and lastName variables
+        var oneCombinedName = $("#myInput").val();
+        var splitName = oneCombinedName.split(" ");
+
+        // get the comment
+        let comment = $("#comment").val();
+
+        // call function to write the comment into DB
+        writeComment(splitName[0], splitName[1], comment);
     });
 
     // listener for removing alert and disabling check in/out button if user change the name in the input box
@@ -56,21 +77,30 @@ $(document).ready(function () {
     // also recall that 'input' event fires on ALL character entry, whereas 'change' only fires when you lose focus
     // on the input
     $("#myInput").on("input", function() {
-        $("#statusAlert").remove();
-        $("#toggleButton").removeClass().addClass("btn btn-outline-secondary");
-        $("#toggleButton").html("Enter name above");
-        $("#toggleButton").attr("disabled", "disabled");
-        document.getElementById("commentCol").style.display = "none";//Hide the comments box
+        $("#successText").html("");
         $("#comment").val('');
-    })
+    });
+
+    // this listener prevents entry into the PIN field that is not the digit 0-9
+    // credit: https://stackoverflow.com/questions/18156824/restricting-an-input-box-to-only-numbers-0-9
+    document.getElementById('employeePin').addEventListener('keydown', function(e) {
+        var key   = e.keyCode ? e.keyCode : e.which;
+
+        if (!( [8, 9, 13, 27, 46, 110, 190].indexOf(key) !== -1 ||
+                (key == 65 && ( e.ctrlKey || e.metaKey  ) ) ||
+                (key >= 35 && key <= 40) ||
+                (key >= 48 && key <= 57 && !(e.shiftKey || e.altKey)) ||
+                (key >= 96 && key <= 105)
+            )) e.preventDefault();
+    });
 
 });
 
 /**
- * Executes ajax to toggle employee status in db, and then calls getEmployeeStatus function in order to check
- * the new status and set alert and toggle button appearance to the correct new appearance.
+ * Executes ajax to toggle employee status in db, and then calls resetPage to toggle page back to original appearance.
  * @param firstName Employee first name.
  * @param lastName Employee last name.
+ * @param comment The comment to be entered along with the status update.
  */
 function toggleEmployeeStatus(firstName, lastName, comment) {
 
@@ -89,13 +119,62 @@ function toggleEmployeeStatus(firstName, lastName, comment) {
         },
         success: function (data, status, response) {
 
-            // now that we've toggled, retrieve the new status and update the page based on new status
-            // recall that this function not only gets the status, it changes the alert and button to appropriate
-            // in, out, or invalid status
-            getEmployeeStatus(firstName, lastName);
+            // we will now reset the page to appear as it did on first load
+            resetPage();
 
         }
     });
+}
+
+function writeComment(firstName, lastName, comment) {
+
+    $.ajax({
+        type: "GET",
+        url: "controllers/ajax.php",
+        cache: false,
+        data: {
+            command: "writeCommentIntoDB",
+            firstName: firstName,
+            lastName: lastName,
+            comment: comment
+        },
+        error: function (response, status, error) {
+            alert("error: " + error);
+        },
+        success: function (data, status, response) {
+
+            // TO DO: fill in the success for writing comment
+            console.log(data);
+
+            resetPage();
+        }
+    });
+}
+
+
+// this function used after employee status is toggled -- it resets the page to its original appearance
+// with the one addition of a note notifying the user that their status and/or comments have been recorded
+function resetPage() {
+
+    // post the success message
+    if(userAction == "Toggle With Comment") {
+        $("#successText").html("Thank you! Your status and comment have been recorded.")
+    }
+    else if(userAction == "Toggle Without Comment") {
+        $("#successText").html("Thank you! Your status has been recorded.")
+    }
+    else if(userAction == "Comment Only") {
+        $("#successText").html("Thank you! Your comment has been recorded.")
+    }
+
+    // clear the name and pin inputs
+    $("#myInput").val("")
+    $("#employeePin").val("");
+
+    // switch the container being displayed
+    $('#checkInOutContainer').hide();
+    $('#nameSubmitContainer').show();
+
 }
 
 /**
@@ -133,44 +212,62 @@ function populateAutofill() {
 
 /**
  * Utility function for setting alert and button to show that employee is OUT.
+ * This function edits elements in the "check in/out" container (as opposed to the employee name submit container)
  */
 function setVisualsEmployeeOut() {
 
-    var noticeDiv = document.createElement("div");
+    // set up the header indicating that the employee is OUT
+    $("#statusText").attr('style', 'color:red;');
+    $("#statusText").html("You are currently OUT");
 
-    noticeDiv.setAttribute('id', 'statusAlert');
-    noticeDiv.setAttribute('class', 'alert alert-info text-center');
-    noticeDiv.setAttribute('role', 'alert');
-    noticeDiv.setAttribute('style', 'width:100%;');
-    noticeDiv.innerHTML = "You are currently OUT";
-    $("#alertCol").append(noticeDiv);
+    // set up the toggle WITHOUT comment button
+    $("#toggleWithoutCommentButton").removeClass().addClass("btn btn-success");
+    $("#toggleWithoutCommentButton").html("Check in");
+    $("#toggleWithoutCommentButton").removeAttr("disabled");
 
-    $("#toggleButton").removeClass().addClass("btn btn-success");
-    $("#toggleButton").html("Check in");
-    $("#toggleButton").removeAttr("disabled");
+    // set up the toggle WITH comment button
+    $("#toggleWithCommentButton").removeClass().addClass("btn btn-success");
+    $("#toggleWithCommentButton").html("Check in and submit comment");
+    $("#toggleWithCommentButton").removeAttr("disabled");
+
+    // set up the comment only button
+    $("#commentOnlyButton").removeClass().addClass("btn btn-light");
+    $("#commentOnlyButton").html("Submit comment only");
+    $("#commentOnlyButton").removeAttr("disabled");
+
+
 }
 
 /**
  * Utility function for setting alert and button to show that employee is IN.
+ * This function edits elements in the "check in/out" container (as opposed to the employee name submit container)
  */
 function setVisualsEmployeeIn() {
 
-    var noticeDiv = document.createElement("div");
+    // set up the header indicating that the employee is IN
+    $("#statusText").attr('style', 'color:limegreen;');
+    $("#statusText").html("You are currently IN");
 
-    noticeDiv.setAttribute('id', 'statusAlert');
-    noticeDiv.setAttribute('class', 'alert alert-success text-center');
-    noticeDiv.setAttribute('role', 'alert');
-    noticeDiv.setAttribute('style', 'width:100%;');
-    noticeDiv.innerHTML = "You are currently IN";
-    $("#alertCol").append(noticeDiv);
+    // set up the toggle (without comment) button
+    $("#toggleWithoutCommentButton").removeClass().addClass("btn btn-info");
+    $("#toggleWithoutCommentButton").html("Check out");
+    $("#toggleWithoutCommentButton").removeAttr("disabled");
 
-    $("#toggleButton").removeClass().addClass("btn btn-info");
-    $("#toggleButton").html("Check out");
-    $("#toggleButton").removeAttr("disabled");
+    // set up the toggle WITH comment button
+    $("#toggleWithCommentButton").removeClass().addClass("btn btn-info");
+    $("#toggleWithCommentButton").html("Check out and submit comment");
+    $("#toggleWithCommentButton").removeAttr("disabled");
+
+    // set up the comment only button
+    $("#commentOnlyButton").removeClass().addClass("btn btn-light");
+    $("#commentOnlyButton").html("Submit comment only");
+    $("#commentOnlyButton").removeAttr("disabled");
+
 }
 
 /**
  * Utility function for setting alert and button to show employee name was invalid.
+ * This function edits elements in the "employee name submit" container (as opposed to the check in/out container)
  */
 function setVisualsInvalid() {
 
@@ -180,12 +277,12 @@ function setVisualsInvalid() {
     noticeDiv.setAttribute('class', 'alert alert-danger text-center');
     noticeDiv.setAttribute('role', 'alert');
     noticeDiv.setAttribute('style', 'width:100%;');
-    noticeDiv.innerHTML = "Invalid employee name";
+    noticeDiv.innerHTML = "Invalid employee name or PIN";
     $("#alertCol").append(noticeDiv);
 
-    $("#toggleButton").removeClass().addClass("btn btn-outline-secondary");
-    $("#toggleButton").html("Enter name above");
-    $("#toggleButton").attr("disabled", "disabled");
+    $("#toggleWithoutCommentButton").removeClass().addClass("btn btn-outline-secondary");
+    $("#toggleWithoutCommentButton").html("Enter name above");
+    $("#toggleWithoutCommentButton").attr("disabled", "disabled");
 }
 
 /**
@@ -193,7 +290,7 @@ function setVisualsInvalid() {
  * @param firstName Employee first name.
  * @param lastName Employee last name.
  */
-function getEmployeeStatus(firstName, lastName) {
+function submitEmployee(firstName, lastName, employeePin) {
 
     $.ajax({
         type: "GET",
@@ -202,7 +299,8 @@ function getEmployeeStatus(firstName, lastName) {
         data: {
             command: "getEmployeeStatusFromDB",
             firstName: firstName,
-            lastName: lastName
+            lastName: lastName,
+            employeePin: employeePin
         },
         error: function (response, status, error) {
             alert("error: " + error);
@@ -216,6 +314,10 @@ function getEmployeeStatus(firstName, lastName) {
             // If query returned valid status information show employee status
             if (data !== "null") {
                 var statusCode = JSON.parse(data).status;
+
+                // remove the container that contains the name, pin, and submit button
+                $('#nameSubmitContainer').hide();
+                $('#checkInOutContainer').show();
                 
                 document.getElementById("commentCol").style.display = "block";//Found valid employee show the comments box
                 // set the correct alert and button type depending on employee status returned by ajax
@@ -229,6 +331,8 @@ function getEmployeeStatus(firstName, lastName) {
         }
     });
 }
+
+
 
 // -------------------- START autocomplete from W3 schools --------------------
 /**
@@ -338,19 +442,19 @@ function autocomplete(inp, arr) {
 }
 // -------------------- END autocomplete from W3 schools --------------------
 
-function clock() {
-    var currentTime = new Date();
-
-    var currentHours = currentTime.getHours ( );
-    var currentMinutes = currentTime.getMinutes ( );
-    currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
-    currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
-    console.log(currentHours+":"+currentMinutes);
-    $(".clock").html(currentHours+":"+currentMinutes);
-    display_c();
-}
-
-function display_c() {
-    var refresh = 30000; // Refresh rate in milli seconds
-    var time= setTimeout('clock()', refresh);
-}
+// function clock() {
+//     var currentTime = new Date();
+//
+//     var currentHours = currentTime.getHours ( );
+//     var currentMinutes = currentTime.getMinutes ( );
+//     currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
+//     currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+//     console.log(currentHours+":"+currentMinutes);
+//     $(".clock").html(currentHours+":"+currentMinutes);
+//     display_c();
+// }
+//
+// function display_c() {
+//     var refresh = 30000; // Refresh rate in milli seconds
+//     var time= setTimeout('clock()', refresh);
+// }

@@ -31,16 +31,10 @@ INSERT INTO time_sheets
 VALUES
 ('rec1', 'rec2', '','rec', 'rec',2, 2222);
 
-CREATE TABLE employee(
-      id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-      day DATE NOT NULL,
-      check_in DATETIME,
-      check_out DATETIME,
-      comment text,
-      employee_id INT, FOREIGN KEY (employee_id) REFERENCES time_sheets(id)
+CREATE TABLE employee_status(
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    status_datetime DATETIME NOT NULL,
+    status tinyint(1),
+    comment_text text,
+    employee_id INT, FOREIGN KEY (employee_id) REFERENCES time_sheets(id)
 );
-
-INSERT INTO employee
-(check_in, check_out, comment, employee_id)
-VALUES
-(0, 0, 'comment', 1);

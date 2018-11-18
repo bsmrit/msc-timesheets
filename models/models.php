@@ -98,12 +98,12 @@
      * @param $lName Employee's last name.
      * @return array|null Single status in single entry array.
      */
-    function getEmployeeStatus($fName, $lName) {
+    function getEmployeeStatus($fName, $lName, $pin) {
         $connection = getConnection();
         $id = $_SESSION['id'];
 
         //query to insert data to db
-        $query = "SELECT status FROM time_sheets WHERE first_name = '$fName' AND last_name = '$lName'";
+        $query = "SELECT status FROM time_sheets WHERE first_name = '$fName' AND last_name = '$lName' AND pin = $pin";
         $results = mysqli_query($connection, $query);
 
         $status = mysqli_fetch_assoc($results);
@@ -114,13 +114,31 @@
      * Toggles the status of the given employee (if IN toggles to OUT and vice versa).
      * @param $fName Employee's first name.
      * @param $lName Employee's last name.
+     * @param $comment Employee's comment.
      * @return array|null Execution result as single entry in array.
      */
     function toggleEmployeeStatus($fName, $lName, $comment) {
         $connection = getConnection();
 
-        //query to toggle employee status
-        $query = "UPDATE time_sheets SET status = !status, comments = '$comment' WHERE first_name = '$fName' AND last_name = '$lName'";
+        // determine the employee's current status
+        $query = "SELECT id, status FROM time_sheets WHERE first_name = '$fName' AND last_name = '$lName'";
+        $result = mysqli_query($connection, $query);
+        $resultArray = mysqli_fetch_assoc($result);
+        $employeeId = $resultArray['id'];
+        $employeeStatus = $resultArray['status'];
+
+        // determine what new status should be based on current status
+        $newStatus = null;
+        if($employeeStatus == 0) { $newStatus = 1; }
+        else { $newStatus = 0; }
+
+        // update the history table with new record
+        $query = "INSERT INTO employee_status (status_datetime, comment_text, status, employee_id)
+                            VALUES (NOW(), '$comment', $newStatus, $employeeId)";
+        @mysqli_query($connection, $query);
+
+        // update the most current info table
+        $query = "UPDATE time_sheets SET status = $newStatus, comments = '$comment' WHERE id = $employeeId";
         $results = mysqli_query($connection, $query);
 
         $result = mysqli_fetch_assoc($results);
@@ -150,6 +168,29 @@
         } else {
             return false;
         }
+    }
+
+    function writeComment($fName, $lName, $comment) {
+        $connection = getConnection();
+
+        // find the employeeId
+        $query = "SELECT id FROM time_sheets WHERE first_name = '$fName' AND last_name = '$lName'";
+        $result = @mysqli_query($connection, $query);
+        $resultArray = @mysqli_fetch_assoc($result);
+        $employeeId = $resultArray['id'];
+        // echo $employeeId;
+
+        // query to insert new comment into the DB
+        // first update the time_sheets table to reflect the latest comment
+        $query = "UPDATE time_sheets SET comments = '$comment' WHERE id = $employeeId";
+        @mysqli_query($connection, $query);
+
+        // next update the employee_status table to store comment as part of employee history
+        $query = "INSERT INTO employee_status (status_datetime, comment_text, employee_id) 
+                    VALUES (NOW(), '$comment', $employeeId)";
+        $result = @mysqli_query($connection, $query);
+        return $result;
+
     }
 
     function deleteEmployee($employeeId) {
