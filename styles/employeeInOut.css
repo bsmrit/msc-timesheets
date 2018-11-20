@@ -29,6 +29,11 @@ input[type=text] {
     width: 100%;
 }
 
+input[type=password] {
+    /*background-color: #f1f1f1;*/
+    width: 100%;
+}
+
 input[type=submit] {
     background-color: DodgerBlue;
     color: #fff;

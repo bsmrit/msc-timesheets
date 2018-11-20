@@ -39,14 +39,6 @@
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/signOut">SIGN OUT</a>
                 </li>
             </ul>
-<!--            <form class="form-inline my-2 mt-3 my-lg-0">-->
-<!--                <a id="employee" class="blue font1 btn btn-secondary mr-2 my-sm-0 radius" href="{{ @BASE.'/addEmployee' }}">Add Employee</a>-->
-
-                <!--  S E A R C H  B O X  -->
-                <!-- <input class="font1 form-control mr-sm-0 bor" placeholder="Search..." type="text">-->
-                <!-- <button class="blue font1 btn btn-secondary my-0 radius bor" type="submit"><i class="fas fa-search"></i>-->
-                <!-- </button>-->
-<!--            </form>-->
         </div>
     </div>
 </nav>

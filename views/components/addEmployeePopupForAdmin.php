@@ -4,7 +4,7 @@
         <h5 id="close-employee-popup" class="a btn float-right px-3 py-0 text-secondary radius">&#x2715;</h5>
         <h4 class="green text-center montserrat pl-5">Add Employee</h4>
 
-        <div class="container px-5">
+        <div class="container px-4">
             <form id="create-list-form" method="post" class="">
                 <div class="d-flex justify-content-center form-row pt-2 pb-0">
 

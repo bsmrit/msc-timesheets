@@ -12,7 +12,7 @@ $(document).ready(function () {
 });
 
 /**
- * Pulls the emmployee names and their status via ajax request
+ * Pulls the employee names and their status via ajax request
  */
 function getEmployees() {
     $.ajax({

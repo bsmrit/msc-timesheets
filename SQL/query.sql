@@ -34,7 +34,7 @@ VALUES
 CREATE TABLE employee_status(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     status_datetime DATETIME NOT NULL,
-    status tinyint(1),
-    comment_text text,
+    status tinyint(1) NOT NULL,
+    comment_text text NOT NULL,
     employee_id INT, FOREIGN KEY (employee_id) REFERENCES time_sheets(id)
 );

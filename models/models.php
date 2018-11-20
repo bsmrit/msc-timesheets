@@ -16,7 +16,8 @@
         $host = 'localhost';
         $database = 'drunkin1_timesheets';
         $connection = mysqli_connect($host, $user, $pass, $database);
-        //if we get a false value, something went wrong
+
+        // if we get a false value, something went wrong
         if(!$connection) {
             echo 'Error connection to DB: ' . mysqli_connect_error();
             exit;
@@ -26,20 +27,23 @@
 
     /**
      * Adds a new employee to db.
-     * @param $fName employee's first name.
-     * @param $lName employee's last name.
-     * @return $lastId the id of the new employee just inserted
+     * @param $fName Employee's first name.
+     * @param $lName Employee's last name.
+     * @param $admin Integer code (0, 1, 2) indicating the user type.
+     * @param $loginName Employee's username provide if admin or receptionist.
+     * @param $password Employee's password provided if admin or receptionist.
+     * @param $pin Employee's pin.
+     * @return int $lastId The id of the new employee just inserted.
      */
     function setNewEmployee($fName, $lName, $admin, $loginName, $password, $pin) {
         $connection = getConnection();
-        $id = $_SESSION['id'];
 
-        //query to insert data to db
-        // BEN: does this work even though you're not setting status and admin??
-        $query = "INSERT INTO time_sheets (first_name, last_name, admin, username, password, pin) VALUES('$fName', '$lName', '$admin', '$loginName', '$password', '$pin')";
+        // query to insert data to db
+        $query = "INSERT INTO time_sheets (first_name, last_name, admin, username, password, pin) 
+                      VALUES('$fName', '$lName', '$admin', '$loginName', '$password', '$pin')";
         $results = mysqli_query($connection, $query);
 
-        //check result
+        // check result
         if(!$results) {
             echo 'List not inserted.';
             exit;
@@ -51,12 +55,11 @@
     }
 
     /**
-     * General function to pull all employees and their status from the DB.
+     * Pulls all employee names, statuses, latest comment, ids, and pins from the DB.
      * @return array Employee first and last names and statuses.
      */
     function getEmployees() {
         $connection = getConnection();
-        $id = $_SESSION['id'];
 
         //query to get data from db
         $query = "SELECT first_name, last_name, status AS 'empStatus', comments, id, pin FROM time_sheets";
@@ -66,6 +69,7 @@
         while($row = mysqli_fetch_assoc($results)) {
             $arrayOfEmployees[] = $row;
         }
+
         //free up server resources
         mysqli_free_result($results);
         return $arrayOfEmployees;
@@ -77,7 +81,6 @@
      */
     function getEmployeeNames() {
         $connection = getConnection();
-//        $id = $_SESSION['id'];
 
         //query to insert data to db
         $query = "SELECT first_name, last_name, admin, username, id , pin FROM time_sheets";
@@ -93,14 +96,14 @@
     }
 
     /**
-     * Returns status for a single given employee (or all employees with given first and last names).
+     * Returns status for a single given employee, given their first and last names and pin.
      * @param $fName Employee's first name.
      * @param $lName Employee's last name.
+     * @param $pin Employee's pin.
      * @return array|null Single status in single entry array.
      */
     function getEmployeeStatus($fName, $lName, $pin) {
         $connection = getConnection();
-        $id = $_SESSION['id'];
 
         //query to insert data to db
         $query = "SELECT status FROM time_sheets WHERE first_name = '$fName' AND last_name = '$lName' AND pin = $pin";
@@ -115,7 +118,7 @@
      * @param $fName Employee's first name.
      * @param $lName Employee's last name.
      * @param $comment Employee's comment.
-     * @return array|null Execution result as single entry in array.
+     * @return int $newStatus Employee's new status after having been toggled.
      */
     function toggleEmployeeStatus($fName, $lName, $comment) {
         $connection = getConnection();
@@ -128,7 +131,6 @@
         $employeeStatus = $resultArray['status'];
 
         // determine what new status should be based on current status
-        $newStatus = null;
         if($employeeStatus == 0) { $newStatus = 1; }
         else { $newStatus = 0; }
 
@@ -139,23 +141,63 @@
 
         // update the most current info table
         $query = "UPDATE time_sheets SET status = $newStatus, comments = '$comment' WHERE id = $employeeId";
-        $results = mysqli_query($connection, $query);
+        @mysqli_query($connection, $query);
 
-        $result = mysqli_fetch_assoc($results);
-        return $result;
+        return $newStatus;
     }
 
+    /**
+     * Retrieves employee information given an employee id.
+     * @param $employeeId Employee's id.
+     * @return array|null An array containing employee information.
+     */
     function getEmployeeDataById($employeeId) {
         $connection = getConnection();
 
         //query to insert data to db
-        $query = "SELECT first_name, last_name, admin, username, password, id, pin FROM time_sheets WHERE id = '$employeeId'";
+        $query = "SELECT first_name, last_name, admin, username, password, id, pin FROM time_sheets 
+                              WHERE id = '$employeeId'";
         $result = @mysqli_query($connection, $query);
         $data = @mysqli_fetch_row($result);
 
         return $data;
     }
 
+    /**
+     * Retrieves the comment history of a single employee.
+     * @param $empId Employee's id.
+     * @return array $arrayOfComments Lists all comments for a single employee
+     */
+    function getEmployeeStatusHistory($empId)
+    {
+        $connection = getConnection();
+
+        //query to get data from db
+        $query = "SELECT status_datetime, comment_text FROM employee_status  WHERE employee_id = '$empId'";
+        $results = mysqli_query($connection, $query);
+
+        $arrayOfComments = array();
+        while($row = mysqli_fetch_assoc($results)) {
+            $arrayOfComments[] = $row;
+        }
+
+        //free up server resources
+        mysqli_free_result($results);
+        
+        return $arrayOfComments;
+    }
+
+    /**
+     * Updates employee information for a given employee id.
+     * @param $firstName Employee's first name.
+     * @param $lastName Employee's last name.
+     * @param $admin Employee's user type.
+     * @param $loginName Employee's username.
+     * @param $password Employee's password.
+     * @param $employeeId Employee's id (used to determine the record to be updated).
+     * @param $pin Employee's pin.
+     * @return array|bool|null Employee data for employee just updated.
+     */
     function updateEmployeeInDb($firstName, $lastName, $admin, $loginName, $password, $employeeId, $pin) {
         $connection = getConnection();
 
@@ -170,6 +212,13 @@
         }
     }
 
+    /**
+     * Writes a comment into DB for given employee.
+     * @param $fName Employee's first name.
+     * @param $lName Employee's last name.
+     * @param $comment Employee's comment.
+     * @return bool|mysqli_result
+     */
     function writeComment($fName, $lName, $comment) {
         $connection = getConnection();
 
@@ -193,6 +242,11 @@
 
     }
 
+    /**
+     * Deletes an employee.
+     * @param $employeeId ID of employee to be deleted.
+     * @return bool
+     */
     function deleteEmployee($employeeId) {
         $connection = getConnection();
 
@@ -208,7 +262,7 @@
     }
 
     /**
-     * Validates the user input data and displays errors if it is needed
+     * Validates the user input data and displays errors if it is needed.
      * @return array of errors or null of no errors
      */
     $errors = array();
@@ -218,8 +272,6 @@
 
         $user = $_POST['user'];
         $password = $_POST['password'];
-        //        echo "user+pass: " . $user . " "; // TEST CODE
-        //        echo $password; // TEST CODE
 
         if($_POST['login'] == 'login') {
 
@@ -227,7 +279,6 @@
             checkPassword($password); // validate password
 
             if(empty($errors)) { // in no errors
-                //                echo " passed validation ";
 
                 //get hashed password from db
                 $query = "SELECT id, username, password, admin FROM time_sheets WHERE username='$user'";
@@ -237,30 +288,23 @@
                 if($result) { // Query ran OK
                     $_SESSION['id'] = $data[0]; // $data[0] is the id retrieved from DB
 
-                    //                    echo "password provided: ".$password."; "; // TEST CODE
-                    //                    echo "data[0] (which is true password from DB): ".$data[2]; // TEST CODE
-
                     // check if provided password matches DB password AND if the user is an admin
-                    // if so, assign session variables
-                    if($password == $data[2] && $data[3] == 1) {
-                        //                        echo " password matched and user is an admin!!! ";
+                    if($password == $data[2] && $data[3] == 1) { // ADMIN
+
                         $_SESSION['id'] = $data[0]; // assign a session variable for the user id
                         $_SESSION['usertype'] = "admin";
-                        //echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
-                        //echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
+
                         return 1; // return 1 means successfully logged an admin in
-                    } elseif($password == $data[2] && $data[3] == 2) {
-                        //echo " password matched and user is an receptionist!!! ";
+
+                    } elseif($password == $data[2] && $data[3] == 2) { // RECEPTIONIST
+
                         $_SESSION['id'] = $data[0]; // assign a session variable for the user id
                         $_SESSION['usertype'] = "receptionist";
-                        //echo "The session 'id' is: " . $_SESSION['id']; // TEST CODE
-                        //echo "The usertype is: " . $_SESSION['usertype']; // TEST CODE
-                        return 2; // return 1 means successfully logged an admin in
+
+                        return 2; // return 2 means successfully logged a receptionist in
+
                     } else { // password did not match OR the user is not an admin
-                        //                        echo " password DID NOT match OR user is NOT an admin ";
-                        // lines below commented out for now -- later will be used to return specific error info
-                        // $errors[] = 'Please check your email and password or try to register.';
-                        // return reportErrors($errors);
+
                         return 0;
                     }
                 } else { // this else is for if the query was not successful
@@ -273,22 +317,6 @@
         }
         return 0;
     }
-
-    //                else {
-    //                    // If it did not run OK a Public message displayed
-    ////                    require '../views/publicErrorMessage.php';
-    //
-    //                    // Debugging message:
-    //                    echo '<p class="">' . mysqli_error(getConnection()) . '<br><br>Query: ' . $query . '</p>';
-    //                }
-    //                mysqli_close(getConnection()); // Close the database connection.
-    //                exit();
-    //            }
-    //            else {
-    //                // Report the errors.
-    //                // return reportErrors($errors);
-    //
-    ////                return false;
 
     /**
      * Validate the user name

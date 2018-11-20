@@ -38,6 +38,9 @@ require '../models/models.php';
         case 'writeCommentIntoDB':
             ajaxWriteCommentIntoDB();
             break;
+        case 'getEmployeeStatusHistory':
+            ajaxGetEmployeeStatusHistory();
+            break;
     }
 
     // BEGIN FUNCTIONS
@@ -89,7 +92,7 @@ require '../models/models.php';
 
         $result = toggleEmployeeStatus($firstName, $lastName, $comment);
 
-        echo json_encode($result);
+        echo $result;
     }
 
     /**
@@ -100,18 +103,27 @@ require '../models/models.php';
         echo json_encode($employeeArray);
     }
 
+    /**
+     * Deletes a single employee from DB.
+     */
     function ajaxDeleteEmployeeInDB() {
         $employeeId = $_GET['employeeId'];
         $result = deleteEmployee($employeeId);
         echo json_encode($result);
     }
 
+    /**
+     * Retrieves data for a single employee given an employee id.
+     */
     function ajaxGetEmployeeDataById() {
         $employeeId = $_GET['employeeId'];
         $result = getEmployeeDataById($employeeId);
         echo json_encode($result);
     }
 
+    /**
+     * Updates a single employee record for a given employee id.
+     */
     function ajaxUpdateEmployeeInDb() {
         $firstName = $_GET['firstName'];
         $lastName = $_GET['lastName'];
@@ -125,6 +137,9 @@ require '../models/models.php';
 
     }
 
+    /**
+     * Writes a comment for a given employee id.
+     */
     function ajaxWriteCommentIntoDB() {
         $firstName = $_GET['firstName'];
         $lastName = $_GET['lastName'];
@@ -133,4 +148,15 @@ require '../models/models.php';
         $result = writeComment($firstName, $lastName, $comment);
 
         echo json_encode($result);
+    }
+    
+    /**
+     * Get comment history of a single employee and echo as json encoded array.
+     */
+    function ajaxGetEmployeeStatusHistory() {
+        $empId = $_GET['empId'];
+
+        $employeeHistory = getEmployeeStatusHistory($empId);
+
+        echo json_encode($employeeHistory);
     }

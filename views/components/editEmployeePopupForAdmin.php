@@ -5,7 +5,7 @@
         <h4 class="green text-center montserrat pl-5">Edit Employee</h4>
 
 
-        <div class="container px-5">
+        <div class="container px-4">
             <form id="create-list" method="post">
                 <div class="d-flex justify-content-center form-row pt-2 pb-0">
 

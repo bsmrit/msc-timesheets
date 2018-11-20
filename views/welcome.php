@@ -10,9 +10,10 @@
 <include href="views/components/header.php"></include>
 <include href="views/components/navBarWelcome.php"></include>
 
-<!-- A D D  E M P L O Y E E  P O P U P -->
+<!-- A D D  E M P L O Y E E  &  H I S T O R Y  P O P U P -->
 <check if="{{@usertype=='admin'}}">
     <include href="views/components/addEmployeePopupForAdmin.php"></include>
+    <include href="views/components/viewHistory.php"></include>
 </check>
 <check if="{{@usertype=='receptionist'}}">
     <include href="views/components/addEmployeePopupForReceptionist.php"></include>
@@ -48,6 +49,7 @@
             <th scope="col">User Name</th>
             <th scope="col">Role</th>
             <th scope="col">Action</th>
+            <th scope="col">History</th>
         </tr>
         </thead>
         <tbody id="time-sheet-body-div">
