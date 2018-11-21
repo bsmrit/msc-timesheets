@@ -50,7 +50,7 @@
                 <false>
                     <ul class="navbar-nav ml-auto ml-4">
                         <li class="nav-item">
-                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">LOGIN</a>
+                            <a id="show-login" class="nav-link font-logo1" style="font-size: 1em;" href="">ADMIN & RECEPTION LOGIN</a>
                         </li>
                     </ul>
                 </false>

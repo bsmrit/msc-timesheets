@@ -173,7 +173,7 @@
         $connection = getConnection();
 
         //query to get data from db
-        $query = "SELECT status_datetime, comment_text FROM employee_status  WHERE employee_id = '$empId'";
+        $query = "SELECT status_datetime, status, comment_text FROM employee_status  WHERE employee_id = '$empId'";
         $results = mysqli_query($connection, $query);
 
         $arrayOfComments = array();
@@ -227,7 +227,12 @@
         $result = @mysqli_query($connection, $query);
         $resultArray = @mysqli_fetch_assoc($result);
         $employeeId = $resultArray['id'];
-        // echo $employeeId;
+
+        // get the employee status using the employee id
+        $query = "SELECT status FROM time_sheets WHERE id = $employeeId";
+        $result = @mysqli_query($connection, $query);
+        $resultArray = @mysqli_fetch_assoc($result);
+        $employeeStatus = $resultArray['status'];
 
         // query to insert new comment into the DB
         // first update the time_sheets table to reflect the latest comment
@@ -235,8 +240,8 @@
         @mysqli_query($connection, $query);
 
         // next update the employee_status table to store comment as part of employee history
-        $query = "INSERT INTO employee_status (status_datetime, comment_text, employee_id) 
-                    VALUES (NOW(), '$comment', $employeeId)";
+        $query = "INSERT INTO employee_status (status_datetime, status, comment_text, employee_id) 
+                    VALUES (NOW(), $employeeStatus, '$comment', $employeeId)";
         $result = @mysqli_query($connection, $query);
         return $result;
 

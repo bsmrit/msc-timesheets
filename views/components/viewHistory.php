@@ -11,6 +11,7 @@
                 <thead>
                     <tr class="green-fond white">
                         <th scope="col">Date/Time</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Comment</th>
                     </tr>
                 </thead>

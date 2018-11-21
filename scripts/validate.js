@@ -592,6 +592,7 @@ function getHistoryById(data) {
             alert("error: " + error);
         },
         success: function (data, status, response) {
+            console.log(data);
             displayHistoryTable(data);
         }
     });
@@ -602,11 +603,19 @@ function getHistoryById(data) {
  */
 function addToHistoryTable(data) {
     let dateTime = data[0];
-    let comment = data[1];
+    let status = data[1];
+    let comment = data[2];
+    let cssClass = "table-success"; // default to IN cell color (green)
+    let statusText = "IN"; // default to IN status text
 
-
+    if(status == 0) { // if the employee is actually OUT, then need to reverse cell color and status text
+        cssClass = "table-danger";
+        statusText = "OUT"
+    }
+    
     let commentRow = '<tr id="">' +
         '<td class=" py-1">' + dateTime + '</td>' +
+        '<td class="' + cssClass + '" py-1">' + statusText + '</td>' +
         '<td class=" py-1">' + comment + '</td>' + '</tr>';
     $('#history-table').append(commentRow);
     console.log('Added row to history-table');
@@ -624,7 +633,7 @@ function displayHistoryTable(data) {
 
     console.log('Table length of:' + table.length);
     for (let i = 0; i < table.length; i++) {
-        let newRow = [table[i].status_datetime, table[i].comment_text];
+        let newRow = [table[i].status_datetime, table[i].status, table[i].comment_text];
         addToHistoryTable(newRow);
     }
 }
