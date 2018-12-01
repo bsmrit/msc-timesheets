@@ -17,7 +17,7 @@
 <!-- title container -->
 <div class="container" style="height:30px; width:300px;">
     <div class="row justify-content-center">
-        <h4 class="my-0">Employee Check In/Out</h4>
+        <h4 class="my-0 green montserrat">Employee Check In/Out</h4>
     </div>
     <hr>
 </div>
@@ -44,7 +44,7 @@
     <!-- new submit button on a second row -->
     <div class="row justify-content-md-center">
         <div class="col-12 p-1">
-            <input id="employeeNameSubmit" type="submit" style="width:100%;" value="Submit">
+            <input id="employeeNameSubmit" type="submit" class="radius" style="width:100%; background-color: #004B87;" value="Submit">
         </div>
     </div>
 
@@ -90,19 +90,19 @@
 
     <div id="commentRow" class="row justify-content-md-center">
         <div id="commentCol" class="col-12 py-1 px-1" style="width:100%;">
-            <textarea class="form-control" rows="5" id="comment" placeholder="Optional: Enter your status comment here..."></textarea>
+            <textarea class="form-control" rows="5" style="border-radius: 0;" id="comment" placeholder="Optional: Enter your status comment here..."></textarea>
         </div>
     </div>
 
     <div class="row mt-2 justify-content-md-content">
         <div class="col-12 px-1">
-            <button id="toggleWithCommentButton" class="toggleButton btn btn-outline-secondary" style="width:100%" disabled></button>
+            <button id="toggleWithCommentButton" class="toggleButton btn btn-outline-secondary radius" style="width:100%" disabled></button>
         </div>
     </div>
 
     <div class="row mt-2 justify-content-md-content">
         <div class="col-12 px-1">
-            <button id="commentOnlyButton" class="btn btn-outline-secondary" style="width:100%" disabled></button>
+            <button id="commentOnlyButton" class="btn btn-outline-secondary radius" style="width:100%" disabled></button>
         </div>
     </div>
 </div>

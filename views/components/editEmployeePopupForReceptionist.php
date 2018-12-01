@@ -1,4 +1,4 @@
-<div class="container d-flex justify-content-center col-sm-12 mt-4 gray">
+<div class="container d-flex justify-content-center col-sm-12 mt-1 gray">
     <div id="edit-employee-popup" class="container col-xl-5 col-lg-6 col-md-7 col-sm-9 col-xs-12 px-0 mt-5 py-3 bg-light" style="display:none;">
 
         <h5 id="close-edit-employee-popup" class="a btn float-right px-3 py-0 text-secondary radius">&#x2715;</h5>

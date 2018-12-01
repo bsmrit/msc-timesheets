@@ -131,12 +131,15 @@
         $employeeStatus = $resultArray['status'];
 
         // determine what new status should be based on current status
-        if($employeeStatus == 0) { $newStatus = 1; }
-        else { $newStatus = 0; }
+        if($employeeStatus == 0) {
+            $newStatus = 1;
+        } else {
+            $newStatus = 0;
+        }
 
         // update the history table with new record
         $query = "INSERT INTO employee_status (status_datetime, comment_text, status, employee_id)
-                            VALUES (NOW(), '$comment', $newStatus, $employeeId)";
+                            VALUES (UNIX_TIMESTAMP(), '$comment', $newStatus, $employeeId)";
         @mysqli_query($connection, $query);
 
         // update the most current info table
@@ -168,8 +171,7 @@
      * @param $empId Employee's id.
      * @return array $arrayOfComments Lists all comments for a single employee
      */
-    function getEmployeeStatusHistory($empId)
-    {
+    function getEmployeeStatusHistory($empId) {
         $connection = getConnection();
 
         //query to get data from db
@@ -183,7 +185,7 @@
 
         //free up server resources
         mysqli_free_result($results);
-        
+
         return $arrayOfComments;
     }
 
@@ -241,7 +243,7 @@
 
         // next update the employee_status table to store comment as part of employee history
         $query = "INSERT INTO employee_status (status_datetime, status, comment_text, employee_id) 
-                    VALUES (NOW(), $employeeStatus, '$comment', $employeeId)";
+                    VALUES (UNIX_TIMESTAMP(), $employeeStatus, '$comment', $employeeId)";
         $result = @mysqli_query($connection, $query);
         return $result;
 
@@ -290,6 +292,7 @@
                 $result = @mysqli_query(getConnection(), $query);
                 $data = @mysqli_fetch_row($result);
 
+
                 if($result) { // Query ran OK
                     $_SESSION['id'] = $data[0]; // $data[0] is the id retrieved from DB
 
@@ -298,14 +301,12 @@
 
                         $_SESSION['id'] = $data[0]; // assign a session variable for the user id
                         $_SESSION['usertype'] = "admin";
-
                         return 1; // return 1 means successfully logged an admin in
 
                     } elseif($password == $data[2] && $data[3] == 2) { // RECEPTIONIST
 
                         $_SESSION['id'] = $data[0]; // assign a session variable for the user id
                         $_SESSION['usertype'] = "receptionist";
-
                         return 2; // return 2 means successfully logged a receptionist in
 
                     } else { // password did not match OR the user is not an admin

@@ -3,7 +3,6 @@
  * @author Dmitry Yushchev, James Way
  * @version 1.0
  */
-
 $(document).ready(function () {
 
     uploadEmployeeNames();
@@ -30,7 +29,6 @@ $(document).ready(function () {
     // login popup
     $("#show-login").on("click", showLoginPopup);
     $("#close-login-popup").on("click", hideLoginPopup);
-
 });
 
 /**
@@ -69,10 +67,11 @@ function showEditEmployeePopup() {
     event.preventDefault();
     //hides "Add Employee" Popup
     hideAddEmployeePopup();
+    hideViewHistoryPopup();
     //gets ID from edit tag by clicking on it
     employeeId = event.target.id;
     employeeId = parseInt(employeeId.replace('employeeId_', ''));
-    // console.log("clicked " + employeeId);
+    console.log("clicked " + employeeId);
     $('#edit-employee-popup:hidden').show("fast");
     //get employee data by id from DB
     getEmployeeDataById(employeeId);
@@ -82,20 +81,19 @@ function showEditEmployeePopup() {
  * Retrieves employee data from DB by clicking on "edit" in the table
  * @param data is employee ID
  */
-function getEmployeeDataById(data) {
+function getEmployeeDataById(employeeId) {
     $.ajax({
         type: "GET",
         url: "controllers/ajax.php",
         cache: false,
         data: {
             command: "getEmployeeDataById",
-            employeeId: data
+            employeeId: employeeId
         },
         error: function (response, status, error) {
             alert("error: " + error);
         },
         success: function (data, status, response) {
-            // console.log("from DB: "+data);
             let employeeData = JSON.parse(data);
             console.log("emp from DB: " + employeeData);
             //fills name and pin inputs of employee
@@ -104,7 +102,7 @@ function getEmployeeDataById(data) {
             $('#pin-edit').val(employeeData[6]);
             //checks radio button and fills login name, password
             let admin;
-            if (employeeData[2] == 1) { //this user is an admin
+            if (employeeData[2] == 1 && countChildren == 7) { //this user is an admin
                 //checks radio button
                 $('input:radio[name=edit-admin]')[1].checked = true;
                 adminInputEdit();
@@ -112,7 +110,7 @@ function getEmployeeDataById(data) {
                 $('#login-name-edit').val(employeeData[3]);
                 $('#password-edit').val(employeeData[4]);
             }
-            else if (employeeData[2] == 2) { // this user is a receptionist
+            else if (employeeData[2] == 2 && countChildren == 7) { // this user is a receptionist
                 //checks radio button
                 $('input:radio[name=edit-admin]')[2].checked = true;
                 adminInputEdit();
@@ -199,22 +197,22 @@ function updateEmployeeInDb(data) {
             let symbol;
             if (employeeData[2] == 1) {
                 symbol = '<i class="fas fa-crown"></i>';
-            }
-            else if (employeeData[2] == 2) {
+            } else if (employeeData[2] == 2) {
                 symbol = '<i class="fas fa-phone"></i>';
             } else {
                 symbol = '';
             }
             //declare edit button with the employee ID
-            let employeeId = "employeeId_" + data[4];
-            let del = '' +
-                '<div style="width: 4em"><i class="fas fa-edit"></i>' +
+            console.log("id: " + employee_Id);
+            let employeeId = "employeeId_" + employee_Id;
+            let action = '<div style="width: 4em"><i class="fas fa-edit"></i>' +
                 '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
                 'onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
             let view = '' +
                 '<div style="width: 4em"><i class="fa fa-hourglass-end"></i>' +
                 '<a id="' + employeeId + '" class="view-history mx-2" ' +
                 'onclick="showViewHistoryPopup()" href="#">View</a></div>';
+
             //creates a raw with employee data
             let employeeRaw = '<tr id="' + employee_Id + '">' +
                 '<td class=" py-1">' + employeeData[0] + '</td>' +
@@ -222,14 +220,29 @@ function updateEmployeeInDb(data) {
                 '<td class=" py-1">' + employeeData[6] + '</td>' +
                 '<td class=" py-1">' + employeeData[3] + '</td>' +
                 '<td class=" py-1">' + symbol + '</td>' +
-                '<td class=" py-1">' + del + '</td>' +
+                '<td class=" py-1">' + action + '</td>' +
                 '<td class=" py-1">' + view + '</td></tr>';
+            //replace the raw in the table
             //replace the raw in the table
             let trId = "#" + employee_Id;
             $(trId).replaceWith(employeeRaw);
         }
     });
 }
+
+function createTableRaw(employee_Id, firstName, lastName, pin, userName, symbol, action, view) {
+    //creates a raw with employee data
+    let employeeRaw = '<tr id="' + employee_Id + '">' +
+        '<td class=" py-1">' + lastName + '</td>' +
+        '<td class=" py-1">' + firstName + '</td>' +
+        '<td class=" py-1">' + pin + '</td>' +
+        '<td class=" py-1">' + userName + '</td>' +
+        '<td class=" py-1">' + symbol + '</td>' +
+        '<td class=" py-1">' + action + '</td>' +
+        '<td class=" py-1">' + view + '</td></tr>';
+    return employeeRaw;
+}
+
 
 /**
  * Creates a div with login name and password
@@ -318,6 +331,7 @@ function showAddEmployeePopup() {
     event.preventDefault();
     //hides other popups
     hideEditEmployeePopup();
+    hideViewHistoryPopup();
     // removeErrorDiv();
     $('#add-employee-popup:hidden').show("fast");
 }
@@ -443,25 +457,47 @@ function postNewEmployee(data) {
         symbol = '';
         username = '';
     }
-    //creates a div with edit button and a symbol
-    let edit = '' +
-        '<div style="width: 4em"><i class="fas fa-edit"></i>' +
-        '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
-        'onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
+    let employee;
+    let edit;
     //creates a div with view button and a symbol
     let view = '' +
         '<div style="width: 4em"><i class="fa fa-hourglass-end"></i>' +
         '<a id="' + employeeId + '" class="view-history mx-2" ' +
         'onclick="showViewHistoryPopup()" href="#">View</a></div>';
-    //creates a raw with employee data
-    let employee = '<tr id="' + data[4] + '">' +
-        '<td class=" py-1">' + firstName + '</td>' +
-        '<td class=" py-1">' + lastName + '</td>' +
-        '<td class=" py-1">' + pin + '</td>' +
-        '<td class=" py-1">' + username + '</td>' +
-        '<td class=" py-1">' + symbol + '</td>' +
-        '<td class=" py-1">' + edit + '</td>' +
-        '<td class=" py-1">' + view + '</td></tr>';
+
+    //check how many children in table head, if 7 = loged in as admin, less = receptionist
+    countChildren = $("#time-sheet-table-head > *").length;
+    if (countChildren == 7) {
+        //creates a div with edit button and a symbol
+        edit = '<div style="width: 4em"><i class="fas fa-edit"></i>' +
+            '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
+            'onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
+
+        //creates a raw with employee data
+        employee = '<tr id="' + data[4] + '">' +
+            '<td class=" py-1">' + lastName + '</td>' +
+            '<td class=" py-1">' + firstName + '</td>' +
+            '<td class=" py-1">' + pin + '</td>' +
+            '<td class=" py-1">' + username + '</td>' +
+            '<td class=" py-1">' + symbol + '</td>' +
+            '<td class=" py-1">' + edit + '</td>' +
+            '<td class=" py-1">' + view + '</td></tr>';
+    } else {
+        //creates a div with edit button and a symbol
+        edit = '<div style="width: 6em"><i class="fas fa-edit"></i>' +
+            '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
+            'onclick="showEditEmployeePopup()" href="#">Delete</a></div>';
+
+        //creates a raw with employee data
+        employee = '<tr id="' + data[4] + '">' +
+            '<td class=" py-1">' + lastName + '</td>' +
+            '<td class=" py-1">' + firstName + '</td>' +
+            '<td class=" py-1">' + pin + '</td>' +
+            '<td class=" py-1">' + username + '</td>' +
+            '<td class=" py-1">' + symbol + '</td>' +
+            '<td class=" py-1">' + edit + '</td></tr>';
+    }
+
     //add a new raw with the employee data into a table
     $('#time-sheet-table-div').append(employee);
     $('#time-sheet-table-div').prev().show();
@@ -519,7 +555,7 @@ function uploadEmployeeNames() {
             alert("error: " + error);
         },
         success: function (data, status, response) {
-            // console.log(data);
+            // console.log("dc: "+getCookie("id"));
             refreshEmployeeNameTable(data);
         }
     });
@@ -568,6 +604,8 @@ function hideViewHistoryPopup() {
  */
 function showViewHistoryPopup() {
     event.preventDefault();
+    hideAddEmployeePopup();
+    hideEditEmployeePopup();
     employeeId = event.target.id;
     employeeId = parseInt(employeeId.replace('employeeId_', ''));
     $('#view-history-popup:hidden').show("fast");
@@ -592,8 +630,22 @@ function getHistoryById(data) {
             alert("error: " + error);
         },
         success: function (data, status, response) {
-            console.log(data);
-            displayHistoryTable(data);
+            jsonData = JSON.parse(data);
+            console.log(jsonData);
+
+            // the JSON'd data object has status_datetime in unix seconds, keep it that way and sort by unix timestamp
+            // b - a will sort such that most recent (greatest) unix timestamp appears first in the array
+            jsonData.sort(function(a, b) {
+                return parseInt(b.status_datetime) - parseInt(a.status_datetime);
+            });
+
+            // now convert each unix timestamp to a local, formatted timestamp string
+            jsonData.forEach(function(element) {
+                var date = new Date(element.status_datetime * 1000);
+                element.status_datetime = date.toLocaleString();
+            });
+
+            displayHistoryTable(JSON.stringify(jsonData));
         }
     });
 }
@@ -608,11 +660,11 @@ function addToHistoryTable(data) {
     let cssClass = "table-success"; // default to IN cell color (green)
     let statusText = "IN"; // default to IN status text
 
-    if(status == 0) { // if the employee is actually OUT, then need to reverse cell color and status text
+    if (status == 0) { // if the employee is actually OUT, then need to reverse cell color and status text
         cssClass = "table-danger";
         statusText = "OUT"
     }
-    
+
     let commentRow = '<tr id="">' +
         '<td class=" py-1">' + dateTime + '</td>' +
         '<td class="' + cssClass + '" py-1">' + statusText + '</td>' +
@@ -635,5 +687,29 @@ function displayHistoryTable(data) {
     for (let i = 0; i < table.length; i++) {
         let newRow = [table[i].status_datetime, table[i].status, table[i].comment_text];
         addToHistoryTable(newRow);
+    }
+}
+
+/**
+ * Filters by last name
+ */
+function filterNamesAdminTable() {
+    // Declare variables
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("nameFilter");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("time-sheet-table-div");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
     }
 }

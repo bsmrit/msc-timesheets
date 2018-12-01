@@ -1,4 +1,4 @@
-nav, #login-popup, #add-employee-popup, #edit-employee-popup {
+nav, #login-popup, #add-employee-popup, #edit-employee-popup, #view-history-popup {
     box-shadow: 0 3px 11px -4px rgba(0, 0, 0, 0.75);
 }
 
@@ -94,12 +94,12 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup {
     /*transition: all 0.2s linear;*/
 }
 
-#add-employee-popup, #edit-employee-popup{
+#add-employee-popup, #edit-employee-popup, #view-history-popup{
     /*width: 70%;*/
-    position: absolute;
+    position: fixed;
     /*top: 40%;*/
     /*right: 15%;*/
-    z-index: 100;
+    z-index: 101;
     /*background-color: rgba(0, 0, 0, 1);*/
     /*-webkit-transition: 0.3s;*/
     /*overflow: auto;*/
@@ -112,5 +112,10 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup {
 
 .login-container {
     z-index: 9999 !important;
+}
+
+.history-container {
+    height:600px;
+    overflow-y: scroll;
 }
 

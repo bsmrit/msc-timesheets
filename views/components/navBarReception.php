@@ -9,7 +9,7 @@
 
 <body>
 <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light py-0 ">
-    <div class="px-0 container col-sm-11 ">
+    <div class="px-0 container col-lg-9 col-md-10 col-sm-12">
         <div class="py-1">
             <div class="container p-0">
                 <img src="{{@BASE}}/includes/msc-logo.png" alt="" style="height:60px">

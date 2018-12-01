@@ -236,17 +236,17 @@ function setVisualsEmployeeOut() {
     $("#statusText").html("You are currently OUT");
 
     // set up the toggle WITHOUT comment button
-    $("#toggleWithoutCommentButton").removeClass().addClass("btn btn-success");
+    $("#toggleWithoutCommentButton").removeClass().addClass("btn radius white");
     $("#toggleWithoutCommentButton").html("Check in");
     $("#toggleWithoutCommentButton").removeAttr("disabled");
 
     // set up the toggle WITH comment button
-    $("#toggleWithCommentButton").removeClass().addClass("btn btn-success");
+    $("#toggleWithCommentButton").removeClass().addClass("btn radius blue white");
     $("#toggleWithCommentButton").html("Check in and submit comment");
     $("#toggleWithCommentButton").removeAttr("disabled");
 
     // set up the comment only button
-    $("#commentOnlyButton").removeClass().addClass("btn btn-light");
+    $("#commentOnlyButton").removeClass().addClass("btn radius green-fond white");
     $("#commentOnlyButton").html("Submit comment only");
     $("#commentOnlyButton").removeAttr("disabled");
 
@@ -263,17 +263,17 @@ function setVisualsEmployeeIn() {
     $("#statusText").html("You are currently IN");
 
     // set up the toggle (without comment) button
-    $("#toggleWithoutCommentButton").removeClass().addClass("btn btn-info");
+    $("#toggleWithoutCommentButton").removeClass().addClass("btn radius blue white");
     $("#toggleWithoutCommentButton").html("Check out");
     $("#toggleWithoutCommentButton").removeAttr("disabled");
 
     // set up the toggle WITH comment button
-    $("#toggleWithCommentButton").removeClass().addClass("btn btn-info");
+    $("#toggleWithCommentButton").removeClass().addClass("btn radius blue white");
     $("#toggleWithCommentButton").html("Check out and submit comment");
     $("#toggleWithCommentButton").removeAttr("disabled");
 
     // set up the comment only button
-    $("#commentOnlyButton").removeClass().addClass("btn btn-light");
+    $("#commentOnlyButton").removeClass().addClass("btn radius green-fond white");
     $("#commentOnlyButton").html("Submit comment only");
     $("#commentOnlyButton").removeAttr("disabled");
 
@@ -288,7 +288,7 @@ function setVisualsInvalid() {
     var noticeDiv = document.createElement("div");
 
     noticeDiv.setAttribute('id', 'statusAlert');
-    noticeDiv.setAttribute('class', 'alert alert-danger text-center');
+    noticeDiv.setAttribute('class', 'alert alert-danger text-center radius');
     noticeDiv.setAttribute('role', 'alert');
     noticeDiv.setAttribute('style', 'width:100%;');
     noticeDiv.innerHTML = "Invalid employee name or PIN";

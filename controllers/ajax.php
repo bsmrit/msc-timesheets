@@ -8,7 +8,6 @@
 
 require '../models/models.php';
 
-
     // Ajax command switch to direct to the correct function below
     switch($_GET['command']) {
         case 'insertNewEmployeeToDB':
@@ -160,3 +159,4 @@ require '../models/models.php';
 
         echo json_encode($employeeHistory);
     }
+    
