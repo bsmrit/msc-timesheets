@@ -192,7 +192,7 @@ function updateEmployeeInDb(data) {
             let employeeData = JSON.parse(data);
             //hides "EditEmployee" popup
             hideEditEmployeePopup();
-            event.preventDefault();
+            //event.preventDefault();
             //declare a symbol for admin and receptionist
             let symbol;
             if (employeeData[2] == 1) {
@@ -362,7 +362,7 @@ function hideAddEmployeePopup() {
  * Gets first and last names from input window.
  * If no errors pass data to postNewEmployee() and insertNewEmployeeIntoDb() functions;
  */
-function saveBtnAddEmployeePopup() {
+function saveBtnAddEmployeePopup(event) {
     // removeErrorDiv();
     event.preventDefault();
     //gets first and last names from "Edit Employee" popup and capitalize the first letter
