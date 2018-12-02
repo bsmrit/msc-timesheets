@@ -56,15 +56,15 @@ function deleteBtnEditEmployeePopup() {
  * Hides "Edit Employee" Popup
  */
 function hideEditEmployeePopup() {
-    event.preventDefault();
+    //event.preventDefault();
     $('#edit-employee-popup').hide("fast");
 }
 
 /**
  * Displays "Edit Employee" popup
  */
-function showEditEmployeePopup() {
-    event.preventDefault();
+function showEditEmployeePopup(event) {
+    //event.preventDefault();
     //hides "Add Employee" Popup
     hideAddEmployeePopup();
     hideViewHistoryPopup();
@@ -207,11 +207,11 @@ function updateEmployeeInDb(data) {
             let employeeId = "employeeId_" + employee_Id;
             let action = '<div style="width: 4em"><i class="fas fa-edit"></i>' +
                 '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
-                'onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
+                'onclick="showEditEmployeePopup(event)" href="#">Edit</a></div>';
             let view = '' +
                 '<div style="width: 4em"><i class="fa fa-hourglass-end"></i>' +
                 '<a id="' + employeeId + '" class="view-history mx-2" ' +
-                'onclick="showViewHistoryPopup()" href="#">View</a></div>';
+                'onclick="showViewHistoryPopup(event)" href="#">View</a></div>';
 
             //creates a raw with employee data
             let employeeRaw = '<tr id="' + employee_Id + '">' +
@@ -309,7 +309,7 @@ function reportErrors(data) {
 /**
  * Displays the "Login" popup
  */
-function showLoginPopup() {
+function showLoginPopup(event) {
     event.preventDefault();
     console.log("login btn clicked");
     $('#login-popup:hidden').show("fast");
@@ -327,7 +327,7 @@ function hideLoginPopup() {
 /**
  * Displays the "Add Employee" popup
  */
-function showAddEmployeePopup() {
+function showAddEmployeePopup(event) {
     event.preventDefault();
     //hides other popups
     hideEditEmployeePopup();
@@ -340,7 +340,7 @@ function showAddEmployeePopup() {
  * Hides the "Add Employee" popup
  */
 function hideAddEmployeePopup() {
-    event.preventDefault();
+    //event.preventDefault(); // REMOVED AS PART OF FIREFOX TROUBLESHOOTING
     //hides pasword and user name by defalt
     $("#admin-input").html("");
     // remove input from all fields
@@ -463,7 +463,7 @@ function postNewEmployee(data) {
     let view = '' +
         '<div style="width: 4em"><i class="fa fa-hourglass-end"></i>' +
         '<a id="' + employeeId + '" class="view-history mx-2" ' +
-        'onclick="showViewHistoryPopup()" href="#">View</a></div>';
+        'onclick="showViewHistoryPopup(event)" href="#">View</a></div>';
 
     //check how many children in table head, if 7 = loged in as admin, less = receptionist
     countChildren = $("#time-sheet-table-head > *").length;
@@ -471,7 +471,7 @@ function postNewEmployee(data) {
         //creates a div with edit button and a symbol
         edit = '<div style="width: 4em"><i class="fas fa-edit"></i>' +
             '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
-            'onclick="showEditEmployeePopup()" href="#">Edit</a></div>';
+            'onclick="showEditEmployeePopup(event)" href="#">Edit</a></div>';
 
         //creates a raw with employee data
         employee = '<tr id="' + data[4] + '">' +
@@ -486,7 +486,7 @@ function postNewEmployee(data) {
         //creates a div with edit button and a symbol
         edit = '<div style="width: 6em"><i class="fas fa-edit"></i>' +
             '<a id="' + employeeId + '" class="edit-emlolyee-raw mx-2" ' +
-            'onclick="showEditEmployeePopup()" href="#">Delete</a></div>';
+            'onclick="showEditEmployeePopup(event)" href="#">Delete</a></div>';
 
         //creates a raw with employee data
         employee = '<tr id="' + data[4] + '">' +
@@ -595,14 +595,14 @@ function reportErrors(data) {
  * Hides "View History" Popup
  */
 function hideViewHistoryPopup() {
-    event.preventDefault();
+    //event.preventDefault();
     $('#view-history-popup').hide("fast");
 }
 
 /**
  * Displays "View History" popup
  */
-function showViewHistoryPopup() {
+function showViewHistoryPopup(event) {
     event.preventDefault();
     hideAddEmployeePopup();
     hideEditEmployeePopup();

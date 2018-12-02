@@ -111,7 +111,7 @@ nav, #login-popup, #add-employee-popup, #edit-employee-popup, #view-history-popu
 }
 
 .login-container {
-    z-index: 9999 !important;
+    z-index: 9999;
 }
 
 .history-container {

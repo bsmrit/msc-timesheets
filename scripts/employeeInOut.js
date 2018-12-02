@@ -18,7 +18,7 @@ var userAction; // will store the action button clicked by the user
 $(document).ready(function () {
 
     populateAutofill(); // go to db, get names, populate autofill
-    document.getElementById("commentCol").style.display = "none"; // hide the comments box on page load
+    //document.getElementById("commentCol").style.display = "none"; // hide the comments box on page load
 
     // listener for employee name submit button -- retrieves employee status from dB
     $("#employeeNameSubmit").on("click", function() {
