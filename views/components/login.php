@@ -7,7 +7,7 @@
             <h4 class="green text-center montserrat">Login</h4>
             <!--  name, password  -->
             <div class="px-4">
-                <form id="login-form" action="" method="post">
+                <form id="login-form" method="post">
                     <input id="user" class=" white-fond my-3 form-control radius"
                            name="user" type="text" placeholder="Username" value="">
                     <input id="password" class="my-3 form-control radius"

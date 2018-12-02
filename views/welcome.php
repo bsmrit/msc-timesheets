@@ -7,7 +7,6 @@
      */
 ?>
 
-<include href="views/components/header.php"></include>
 <include href="views/components/navBarWelcome.php"></include>
 
 <!-- A D D  E M P L O Y E E  &  H I S T O R Y  P O P U P -->

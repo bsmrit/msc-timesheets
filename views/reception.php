@@ -7,7 +7,6 @@
      */
 ?>
 
-<include href="views/components/header.php"></include>
 <include href="views/components/navBarReception.php"></include>
 <script src="{{ @BASE }}/scripts/reception.js?v={{ rand()}}"></script>
 

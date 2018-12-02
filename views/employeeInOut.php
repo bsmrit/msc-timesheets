@@ -7,7 +7,6 @@
      */
 ?>
 
-<include href="views/components/header.php"></include>
 <include href="views/components/navBarEmployee.php"></include>
 <include href="views/components/login.php"></include>
 
@@ -56,9 +55,9 @@
     <br>
     <br>
 
-    <div id="successNoticeRow" class="row justify-content-md-center">
-        <div id="successNoticeCol" class="col-12 mb-2 py-1 px-1 justify-content-md-center" style="width:100%;">
-            <h5 id="successText" class="successText" align="center"></h5>
+    <div id="successNoticeRow" class="row">
+        <div id="successNoticeCol" class="container col-12 mb-2 py-1 px-1" style="width:100%;">
+            <h5 id="successText" class="successText text-center"></h5>
         </div>
     </div>
 </div>
@@ -68,7 +67,7 @@
 
     <div id="inOutTextRow" class="row justify-content-md-center">
         <div id="inOutTextCol" class="col-12 mb-2 py-1 px-1 justify-content-md-center" style="width:100%;">
-            <h4 id="statusText" class="statusText" align="center">You are currently ?</h4>
+            <h4 id="statusText" class="statusText text-center">You are currently ?</h4>
         </div>
     </div>
 

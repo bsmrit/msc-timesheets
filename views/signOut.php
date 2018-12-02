@@ -9,7 +9,6 @@
 
 <meta http-equiv="refresh" content="2;{{@BASE}}">
 
-<include href="views/components/header.php"></include>
 <include href="views/components/navBarBlank.php"></include>
 
     <br>
