@@ -22,7 +22,7 @@ $(document).ready(function () {
 
     // listener for employee name submit button -- retrieves employee status from dB
     $("#employeeNameSubmit").on("click", function() {
-        event.preventDefault();
+        //event.preventDefault();
 
         // get name out of text input and split into firstName and lastName variables
         var oneCombinedName = $("#myInput").val();
