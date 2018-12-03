@@ -1,5 +1,5 @@
 drop table time_sheets;
-drop table employee;
+drop table employee_status;
 
 CREATE TABLE time_sheets(
      id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,

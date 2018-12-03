@@ -68,7 +68,7 @@
         <div class="collapse navbar-collapse text-right" id="navbarColor01">
             <ul class="navbar-nav ml-4">
                 <li class="nav-item">
-                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}">CHECK-IN</a>
+                    <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/">CHECK-IN</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">STATUS BOARD</a>

@@ -72,7 +72,7 @@
                 <!-- if you are logged in as admin, show additional links -->
                 <check if="{{ @usertype=='admin' || @usertype=='receptionist' }}">
                     <li class="nav-item active">
-                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}">CHECK-IN</a>
+                        <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/">CHECK-IN</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-logo1" style="font-size: 1em;" href="{{@BASE}}/reception">STATUS BOARD</a>
