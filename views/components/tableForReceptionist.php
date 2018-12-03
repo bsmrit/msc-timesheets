@@ -2,11 +2,11 @@
     <table id="time-sheet-table-div" class="table table-responsive-sm table-hover table-bordered">
         <thead>
         <tr id="time-sheet-table-head" class="green-fond white">
-            <th scope="col">Last Name</th>
-            <th scope="col">First Name</th>
+            <th onclick="sortTable(0)" scope="col">Last Name</th>
+            <th onclick="sortTable(1)" scope="col">First Name</th>
             <th scope="col">PIN</th>
-            <th scope="col">User Name</th>
-            <th scope="col">Role</th>
+            <th onclick="sortTable(3)" scope="col">User Name</th>
+            <th onclick="sortTable(4)" scope="col">Role</th>
             <th scope="col">Action</th>
         </tr>
         </thead>

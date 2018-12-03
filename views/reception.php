@@ -11,37 +11,19 @@
 <script src="{{ @BASE }}/scripts/reception.js?v={{ rand()}}"></script>
 
 <div class="container col-lg-9 col-md-10 col-sm-12 mt-3">
-    <input class="mb-2 bor white-fond form-control" type="text" id="nameFilter" onkeyup="filterNames()" placeholder="Search by last name...">
+    <input class="mb-2 bor white-fond form-control" type="text" id="nameFilter" onkeyup="filterNames()" placeholder="Search by name...">
     <table class="table table-responsive-sm table-hover table-bordered white-fond" id="employeeTable">
         <thead class="green-fond white">
         <tr>
-            <th scope="col" style="width: 1.5em">#</th>
-            <th scope="col">Last Name</th>
-            <th scope="col">First Name</th>
-            <th scope="col" style="width: 1.5em">Status</th>
+            <th onclick="sortTable(0)" scope="col">Last Name</th>
+            <th onclick="sortTable(1)" scope="col">First Name</th>
+            <th onclick="sortTable(2)" scope="col" style="width: 1.5em">Status</th>
             <th scope="col">Comments</th>
         </tr>
         </thead>
         <tbody id="tableData"></tbody>
     </table>
 </div>
-
-<!--<div class="container col-lg-9 col-md-10 col-sm-12 mt-2">-->
-<!--    <input type="text" id="nameFilter" onkeyup="filterNames()" placeholder="Search by last name...">-->
-<!--    <table class="table table-bordered" id="employeeTable">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th scope="col">#</th>-->
-<!--            <th scope="col">Last</th>-->
-<!--            <th scope="col">First</th>-->
-<!--            <th scope="col">Status</th>-->
-<!--            <th scope="col">Comments</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody id="tableData">-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
 
 </body>
 </html>
