@@ -18,6 +18,7 @@
             <th onclick="sortTable(0)" scope="col">Last Name</th>
             <th onclick="sortTable(1)" scope="col">First Name</th>
             <th onclick="sortTable(2)" scope="col" style="width: 1.5em">Status</th>
+            <th onclick="sortTable(3)" scope="col" style="width: 12em">Last Update</th>
             <th scope="col">Comments</th>
         </tr>
         </thead>

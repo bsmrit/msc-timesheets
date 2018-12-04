@@ -13,6 +13,10 @@
 <br>
 <br>
 
+<check if="{{ @login_failed }}">
+    <script type='text/javascript'>alert('Incorrect username or password.');</script>
+</check>
+
 <!-- title container -->
 <div class="container" style="height:30px; width:300px;">
     <div class="row justify-content-center">

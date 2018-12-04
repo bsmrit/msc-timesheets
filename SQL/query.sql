@@ -6,6 +6,7 @@ CREATE TABLE time_sheets(
      first_name VARCHAR(50) NOT NULL,
      last_name VARCHAR(50) NOT NULL,
      status tinyint(1) NOT NULL,
+     status_datetime INT(11) NOT NULL,
      comments TEXT NOT NULL,
      username VARCHAR(50),
      password VARCHAR(255),

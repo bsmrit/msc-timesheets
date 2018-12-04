@@ -51,6 +51,7 @@
         $fatFree->set('usertype', $_SESSION['usertype']);
 
         if($result == 0) { //display errors
+            $fatFree->set('login_failed', true);
             echo Template::instance()->render('views/employeeInOut.php');
         } elseif($result == 1) { //route to admin page, logged in as admin
             echo Template::instance()->render('views/welcome.php');

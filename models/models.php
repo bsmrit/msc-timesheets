@@ -62,7 +62,8 @@
         $connection = getConnection();
 
         //query to get data from db
-        $query = "SELECT first_name, last_name, status AS 'empStatus', comments, id, pin FROM time_sheets";
+        $query = "SELECT first_name, last_name, status AS 'empStatus', comments, id, pin, status_datetime
+                  FROM time_sheets";
         $results = mysqli_query($connection, $query);
 
         $arrayOfEmployees = array();
@@ -137,13 +138,17 @@
             $newStatus = 0;
         }
 
+        // save the current unix timestamp for use in both queries below (so it matches exactly)
+        $unix_timestamp = time();
+
         // update the history table with new record
         $query = "INSERT INTO employee_status (status_datetime, comment_text, status, employee_id)
-                            VALUES (UNIX_TIMESTAMP(), '$comment', $newStatus, $employeeId)";
+                            VALUES ($unix_timestamp, '$comment', $newStatus, $employeeId)";
         @mysqli_query($connection, $query);
 
         // update the most current info table
-        $query = "UPDATE time_sheets SET status = $newStatus, comments = '$comment' WHERE id = $employeeId";
+        $query = "UPDATE time_sheets SET status = $newStatus, comments = '$comment', status_datetime = $unix_timestamp
+                                WHERE id = $employeeId";
         @mysqli_query($connection, $query);
 
         return $newStatus;
@@ -236,14 +241,18 @@
         $resultArray = @mysqli_fetch_assoc($result);
         $employeeStatus = $resultArray['status'];
 
+        // save the current unix timestamp for use in both queries below (so it matches exactly)
+        $unix_timestamp = time();
+
         // query to insert new comment into the DB
         // first update the time_sheets table to reflect the latest comment
-        $query = "UPDATE time_sheets SET comments = '$comment' WHERE id = $employeeId";
+        $query = "UPDATE time_sheets SET comments = '$comment', status_datetime = $unix_timestamp 
+                                WHERE id = $employeeId";
         @mysqli_query($connection, $query);
 
         // next update the employee_status table to store comment as part of employee history
         $query = "INSERT INTO employee_status (status_datetime, status, comment_text, employee_id) 
-                    VALUES (UNIX_TIMESTAMP(), $employeeStatus, '$comment', $employeeId)";
+                    VALUES ($unix_timestamp, $employeeStatus, '$comment', $employeeId)";
         $result = @mysqli_query($connection, $query);
         return $result;
 
@@ -317,7 +326,6 @@
                     return 0;
                 }
             } else { // this else is for if the basic validation (not password verification) did not pass
-                echo " NOT passed validation ";
                 return 0;
             }
         }

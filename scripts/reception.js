@@ -39,7 +39,8 @@ function addToTable(data) {
     let firstName = data[0];
     let lastName = data[1];
     let empStatus = data[2];
-    let comments = data[3];
+    let dateTime = data[3];
+    let comments = data[4];
     let cssClass = "table-danger";
 
     if (empStatus == 0) {
@@ -49,11 +50,16 @@ function addToTable(data) {
         empStatus = "In";
         cssClass = "table-success";
     }
+
+    // reformat time from unix time to a datetime string
+    let options = {day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute:'2-digit'};
+    let formattedDate = new Date(dateTime * 1000).toLocaleString([], options);
     
     let employee = '<tr class="" id="">' +
         '<td class=" py-1">' + lastName + '</td>' +
         '<td class=" py-1">' + firstName + '</td>' +
         '<td class=" py-1 ' + cssClass + '">' + empStatus + '</td>' +
+        '<td class=" py-1">' + formattedDate + '</td>' +
         '<td class=" py-1">' + comments + '</td>' + '</tr>';
     $('#employeeTable').append(employee);
 }
@@ -64,12 +70,13 @@ function addToTable(data) {
  */
 function displayTable(data) {
     let table = JSON.parse(data);
+    console.log(table);
     $("#tableData").remove(); //remove the old data
     $("#employeeTable").append("<tbody id='" + "tableData'" + "></tbody>");
 
     // Add a new table row
     for (let i = 0; i < table.length; i++) {
-        let newRow = [table[i].first_name, table[i].last_name, table[i].empStatus, table[i].comments];
+        let newRow = [table[i].first_name, table[i].last_name, table[i].empStatus, table[i].status_datetime, table[i].comments];
         addToTable(newRow);
     }
     if (document.getElementById("nameFilter") !== '') {

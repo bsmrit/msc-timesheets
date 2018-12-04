@@ -424,7 +424,12 @@ function saveBtnAddEmployeePopup(event) {
         insertNewEmployeeIntoDb(newEmployee); // insertNewEmployee will update DB and UI (as part of success block)
     }
     else {
-        console.log(errors);
+        $('#errors').empty();
+        $('#errors').append('<br><ul id="errorList">');
+        errors.forEach(function (element) {
+            $('#errors').append('<li class="danger">' + element + "</li>");
+        });
+        $('#errors').append("</ul>");
     }
 }
 
@@ -649,10 +654,11 @@ function getHistoryById(data) {
                 return parseInt(b.status_datetime) - parseInt(a.status_datetime);
             });
 
+            let options = {day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute:'2-digit'};
             // now convert each unix timestamp to a local, formatted timestamp string
             jsonData.forEach(function(element) {
                 var date = new Date(element.status_datetime * 1000);
-                element.status_datetime = date.toLocaleString();
+                element.status_datetime = date.toLocaleString([], options);
             });
 
             displayHistoryTable(JSON.stringify(jsonData));

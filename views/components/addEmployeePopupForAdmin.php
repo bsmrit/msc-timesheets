@@ -52,6 +52,8 @@
                             </button>
                     </div>
                 </div>
+                <div id="errors">
+                </div>
             </form>
         </div>
     </div>
