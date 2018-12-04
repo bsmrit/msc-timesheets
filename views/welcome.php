@@ -31,7 +31,7 @@
 <div class="container d-flex justify-content-left col-lg-9 col-md-10 col-sm-12 mt-0 rounded gray">
     <div class="container d-flex justify-content-left col-12 px-0">
         <a id="employee" class="blue bor font1 btn btn-secondary mr-2 my-sm-0 radius" href="{{ @BASE.'/addEmployee' }}">Add Employee</a>
-        <input id="nameFilter" class="form-control bor" type="text" onkeyup="filterNamesAdminTable()" placeholder="Search by last name...">
+        <input id="nameFilter" class="form-control bor" type="text" onkeyup="filterNamesAdminTable()" placeholder="Search by name...">
     </div>
 </div>
 

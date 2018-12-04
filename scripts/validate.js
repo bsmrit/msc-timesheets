@@ -29,6 +29,7 @@ $(document).ready(function () {
     // login popup
     $("#show-login").on("click", showLoginPopup);
     $("#close-login-popup").on("click", hideLoginPopup);
+
 });
 
 /**
@@ -395,28 +396,35 @@ function saveBtnAddEmployeePopup(event) {
     let newEmployee = [];
     let errors = [];
 
-    //name must noy be empty
-    if (firstName.length == 0 || lastName.length == 0) {
-        errors.push("You forgot enter first or last name.");
-        console.log("You forgot enter first or last name.")
-        // reportErrors(errors);
+    //first name must not be empty
+    if (firstName.length == 0){
+        errors.push("First name required.");
     }
-    //pin must not be emtry
+    //last name must not be empty
+    if (lastName.length == 0) {
+        errors.push("Last name required.");
+    }
+    //pin must not be empty
     if (pin == 0 || !pin.toString().length == 4) {
-        errors.push("You forgot enter PIN or it is less that 4 digits.");
-        console.log("You forgot enter PIN or it is less that 4 digits.")
-        // reportErrors(errors);
+        errors.push("You forgot to enter a PIN or it is less that 4 digits.");
     }
-    else if (admin == 1 && loginName.length == 0 || admin == 1 && password.length == 0 ||
-        admin == 2 && loginName.length == 0 || admin == 2 && password.length == 0) {
-        errors.push("You forgot enter login or password.");
-        console.log("You forgot enter login or password.")
-        // reportErrors(errors);
+    //username must not be empty
+    if ((admin == 1 && loginName.length == 0) || (admin == 2 && loginName.length == 0)) {
+        errors.push("Username required.");
     }
-    else {
+    //password must not be empty
+    if ((admin == 1 && password.length == 0) || (admin == 2 && password.length == 0)) {
+        errors.push("Password required.");
+    }
+    
+    //Add new employee, or if errors show those instead
+    if (errors.length == 0) {
         newEmployee = [firstName, lastName, admin, loginName, password, pin];
         console.log("newEmployee: " + newEmployee);
         insertNewEmployeeIntoDb(newEmployee); // insertNewEmployee will update DB and UI (as part of success block)
+    }
+    else {
+        console.log(errors);
     }
 }
 
