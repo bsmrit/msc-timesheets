@@ -2,7 +2,7 @@
     <div id="edit-employee-popup" class="container col-xl-5 col-lg-6 col-md-7 col-sm-9 col-xs-12 px-0 mt-5 py-3 bg-light" style="display:none;">
 
         <h5 id="close-edit-employee-popup" class="a btn float-right px-3 py-0 text-secondary radius">&#x2715;</h5>
-        <h4 class="green text-center montserrat pl-5">Edit Employee</h4>
+        <h4 class="green text-center montserrat pl-5">Delete Employee</h4>
 
 
         <div class="container px-4">

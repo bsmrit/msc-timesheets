@@ -36,7 +36,6 @@ $(document).ready(function () {
  * Deletes employee in "Edit Employee" popup
  */
 function deleteBtnEditEmployeePopup() {
-    console.log("dele" + employeeId);
     $.ajax({
         type: "GET",
         url: "controllers/ajax.php",
@@ -44,6 +43,12 @@ function deleteBtnEditEmployeePopup() {
         data: {
             command: "deleteEmployeeInDB",
             employeeId: employee_Id
+        },
+        error: function (response, status, error) {
+            alert("error: " + error);
+        },
+        success: function (data, status, response) {
+            console.log(data);
         }
     });
     //removes a raw from the table by ID
@@ -69,6 +74,7 @@ function showEditEmployeePopup(event) {
     //hides "Add Employee" Popup
     hideAddEmployeePopup();
     hideViewHistoryPopup();
+    $('#errors-edit').empty();
     //gets ID from edit tag by clicking on it
     employeeId = event.target.id;
     employeeId = parseInt(employeeId.replace('employeeId_', ''));
@@ -140,33 +146,60 @@ function saveBtnEditEmployeePopup() {
     let loginName;
     let password;
     let employee;
-    //if admin or recep password, login name are needed
-    if ((admin == 1 || admin == 2) && firstName.length !== 0 &&
-        lastName.length !== 0 && pin.length == 4 && !isNaN(pin)) {
+    
+    if (admin == 1 || admin == 2) {
         loginName = $("#login-name-edit").val();
         password = $("#password-edit").val();
-
-        if (loginName.length !== 0 && password.length !== 0) {
-            employee = [firstName, lastName, admin, loginName, password, pin];
-            //update emplyee info in DB and hide the popup
-            updateEmployeeInDb(employee);
-            hideEditEmployeePopup();
-        }
+    } else {
+        admin = 0;
+        loginName, password = "";
+    }
+    
+    //if admin or recep password, login name are needed
+    if ((admin == 1 || admin == 2) && firstName.length !== 0 && 
+        lastName.length !== 0 && pin.length == 4 && !isNaN(pin) && 
+            loginName.length !== 0 && password.length !== 0){
+        employee = [firstName, lastName, admin, loginName, password, pin];
+        //update emplyee info in DB and hide the popup
+        updateEmployeeInDb(employee);
+        hideEditEmployeePopup();
     }//if employee password, login name not needed
     else if (admin == 0 && firstName.length !== 0 &&
         lastName.length !== 0 && pin.length == 4 && !isNaN(pin)) {
-        loginName = "";
-        password = "";
-
-        if (loginName.length == 0 && password.length == 0) {
             employee = [firstName, lastName, admin, loginName, password, pin];
             //update emplyee info in DB and hide the popup
             updateEmployeeInDb(employee);
             hideEditEmployeePopup();
-        }
     }
     else {
-        console.log("Something is missing, emolpyee was not updated.");
+        let errors = [];
+        //first name must not be empty
+        if (firstName.length == 0){
+            errors.push("First name required.");
+        }
+        //last name must not be empty
+        if (lastName.length == 0) {
+            errors.push("Last name required.");
+        }
+        //pin must not be empty
+        if (pin == 0 || !pin.toString().length == 4) {
+            errors.push("You forgot to enter a PIN or it is less that 4 digits.");
+        }
+        //username must not be empty
+        if ((admin == 1 && loginName.length == 0) || (admin == 2 && loginName.length == 0)) {
+            errors.push("Username required.");
+        }
+        //password must not be empty
+        if ((admin == 1 && password.length == 0) || (admin == 2 && password.length == 0)) {
+            errors.push("Password required.");
+        }
+        //append the errors to the dom
+        $('#errors-edit').empty();
+        $('#errors-edit').append('<br><ul id="errorList-edit">');
+        errors.forEach(function (element) {
+            $('#errors-edit').append('<li class="text-danger">' + element + "</li>");
+        });
+        $('#errors-edit').append("</ul>");
     }
 }
 
@@ -181,7 +214,7 @@ function updateEmployeeInDb(data) {
         cache: false,
         data: {
             command: "updateEmployeeInDb",
-            firstName: data[0],
+            firstName: data[0], // BUG FIX HERE -- 0 and 1 on these two lines switches -- fixed only partially
             lastName: data[1],
             admin: data[2],
             loginName: data[3],
@@ -297,16 +330,6 @@ function radioButtons(data1, data2, inputDiv) {
     }
 }
 
-//Report the errors if needed <----------- N O T  U S E D
-function reportErrors(data) {
-    $('.error-title:hidden').show("fast");
-    $('div#error').show("fast");
-
-    data.forEach(function (element) {
-        $('.error-message').append("<h5 class=\"report-errors\">" + element + "</h5>");
-    });
-}
-
 /**
  * Displays the "Login" popup
  */
@@ -333,6 +356,7 @@ function showAddEmployeePopup(event) {
     //hides other popups
     hideEditEmployeePopup();
     hideViewHistoryPopup();
+    $('#errors').empty();
     // removeErrorDiv();
     $('#add-employee-popup:hidden').show("fast");
 }
@@ -427,7 +451,7 @@ function saveBtnAddEmployeePopup(event) {
         $('#errors').empty();
         $('#errors').append('<br><ul id="errorList">');
         errors.forEach(function (element) {
-            $('#errors').append('<li class="danger">' + element + "</li>");
+            $('#errors').append('<li class="text-danger">' + element + "</li>");
         });
         $('#errors').append("</ul>");
     }

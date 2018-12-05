@@ -59,6 +59,8 @@
                         </div>
                     </div>
                 </div>
+                <div id="errors-edit">
+                </div>
             </form>
         </div>
     </div>
